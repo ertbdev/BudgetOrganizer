@@ -31,6 +31,9 @@
         "projectId": "ea3311c2-4beb-4316-95aa-5ea258f9e31c"
       }
     },
-    "owner": "ertbdev"
+    "owner": "ertbdev",
+    "plugins": [
+      "expo-localization"
+    ]
   }
 }

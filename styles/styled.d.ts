@@ -1,5 +1,5 @@
 import 'styled-components/native';
-import {Palette} from './themes/types';
+import {Palette} from '../types/theme';
 
 declare module 'styled-components/native' {
   export interface DefaultTheme {
