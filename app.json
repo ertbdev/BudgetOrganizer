@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "BudgetOrganizer",
-    "slug": "BudgetOrganizer",
+    "slug": "budget-organizer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ea3311c2-4beb-4316-95aa-5ea258f9e31c"
+      }
+    },
+    "owner": "ertbdev"
   }
 }
