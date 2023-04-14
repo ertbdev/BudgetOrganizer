@@ -13,7 +13,7 @@ type Props = {
   alignItems?: 'center' | 'flex-start' | 'flex-end';
 } & Padding;
 
-const WrapperAvoidance = ({children, style, justifyContent, alignItems, variant = 'default', p, pb, pl, pr, pt, px, py}: Props) => {
+const MainContainer = ({children, style, justifyContent, alignItems, variant = 'default', p, pb, pl, pr, pt, px, py}: Props) => {
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
@@ -32,7 +32,7 @@ const WrapperAvoidance = ({children, style, justifyContent, alignItems, variant 
           {children}
         </ScreenContainer>
       ) : (
-        <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
             <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
               <ScreenContainer justifyContent={justifyContent} alignItems={alignItems} style={[padding, style]}>
@@ -46,4 +46,4 @@ const WrapperAvoidance = ({children, style, justifyContent, alignItems, variant 
   );
 };
 
-export default WrapperAvoidance;
+export default MainContainer;

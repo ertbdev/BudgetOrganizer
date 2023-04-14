@@ -9,19 +9,24 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import RootStack from './navigators/RootStack';
 import i18n from './assets/locale/i18n';
 import {locale} from 'expo-localization';
+import {AuthProvider} from './providers/AuthProvider';
 
 i18n.defaultLocale = 'en';
 i18n.locale = locale;
 i18n.enableFallback = true;
+i18n.missingBehavior = "guess";
+i18n.missingTranslationPrefix = "^";
 
 export default function App() {
   const colorScheme = useColorScheme();
   return (
     <SafeAreaProvider>
-      <ThemeProvider theme={darkLightTheme(colorScheme === 'dark')}>
-        <StatusBar style="auto" />
-        <RootStack />
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider theme={darkLightTheme(colorScheme === 'dark')}>
+          <StatusBar style="auto" />
+          <RootStack />
+        </ThemeProvider>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

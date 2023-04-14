@@ -12,6 +12,10 @@ type Props = {
   buttonColor?: string;
   /** Text of the button */
   children: ReactNode;
+  /** disables the button
+   * @default false
+   */
+  disabled?: boolean;
   /** Determines the height of the button and the fontSize */
   height?: number;
   /** Determines the minimun width of the button */
@@ -36,6 +40,7 @@ type Props = {
 } & Margin;
 
 const Button = ({
+  disabled = false,
   height = 50,
   minWidth,
   borderRadius = 15,
@@ -58,7 +63,12 @@ const Button = ({
 }: Props) => {
   const {palette} = useTheme();
   const _textSize = textSize ? (textSize > Math.ceil(height * 0.7) ? Math.ceil(height * 0.7) : textSize) : Math.ceil(height * 0.4);
-  const styles = makeStyles(palette, mode, height, borderRadius, minWidth, buttonColor, textColor, _textSize);
+
+  const _textColor =
+    disabled && mode === 'text' ? palette.gray[600] : textColor ? textColor : mode === 'text' ? palette.primary.main : palette.common.white;
+  const _buttonColor = mode === 'text' ? 'transparent' : disabled ? palette.gray[600] : buttonColor || palette.primary.main;
+
+  const styles = makeStyles(palette, mode, height, borderRadius, minWidth, _buttonColor, _textColor, _textSize);
 
   const shadowStyle = {
     shadowColor: shadowColor ? shadowColor : palette.text.primary,
@@ -77,11 +87,11 @@ const Button = ({
 
   return (
     <TouchableOpacity
-      disabled={loading}
+      disabled={loading || disabled}
       style={[styles.container, margin, shadow && mode !== 'text' && shadowStyle]}
       activeOpacity={0.8}
       onPress={onPress}>
-      {loading ? <ActivityIndicator size={_textSize} style={styles.activitiIndicator} color={textColor || palette.text.primary} /> : null}
+      {loading ? <ActivityIndicator size={_textSize} style={styles.activitiIndicator} color={_textColor} /> : null}
       {!(mode === 'rounded' && loading) ? <Text style={[styles.text]}>{children}</Text> : null}
     </TouchableOpacity>
   );
@@ -107,12 +117,12 @@ const makeStyles = (
       borderRadius: mode === 'rounded' ? height / 2 : borderRadius,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: mode === 'text' ? 'transparent' : buttonColor || palette.primary.main,
+      backgroundColor: buttonColor,
     },
     text: {
       fontSize: textSize,
       fontWeight: '600',
-      color: textColor ? textColor : mode === 'text' ? palette.primary.main : palette.common.white,
+      color: textColor,
     },
     activitiIndicator: {
       marginRight: mode === 'rounded' ? 0 : 10,
