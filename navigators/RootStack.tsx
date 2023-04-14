@@ -8,10 +8,11 @@ import {RootStackParamList} from '../types/navigation';
 import SignInScreen from '../screens/auth/SignInScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
 import {useAuthContext} from '../providers/AuthProvider';
-import Home from '../screens/Home';
+import HomeScreen from '../screens/Tabs/HomeSceen';
 import MainContainer from '../components/common/MainContainer';
 
 import {useTheme} from 'styled-components/native';
+import BottomTabs from './BottomTabs';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,7 +39,7 @@ const RootStack = () => {
           </Stack.Group>
         ) : (
           <Stack.Group>
-            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="BottomTabs" component={BottomTabs} />
           </Stack.Group>
         )}
       </Stack.Navigator>

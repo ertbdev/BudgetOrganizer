@@ -1,11 +1,11 @@
 import React from 'react';
 
 import {Text} from 'react-native';
-import MainContainer from '../components/common/MainContainer';
-import Button from '../components/common/Button';
-import {useAuthContext} from '../providers/AuthProvider';
+import MainContainer from '../../components/common/MainContainer';
+import Button from '../../components/common/Button';
+import {useAuthContext} from '../../providers/AuthProvider';
 
-const Home = () => {
+const IncomingsScreen = () => {
   const {signOutUser, user} = useAuthContext();
 
   return (
@@ -16,4 +16,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default IncomingsScreen;

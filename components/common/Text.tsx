@@ -5,7 +5,7 @@ import {Margin} from '../../types/container';
 
 type Props = {
   children?: React.ReactNode;
-  variant?: 'h1' | 'h2' | 'title' | 'subtitle' | 'body1' | 'body2';
+  variant?: 'h1' | 'h2' | 'h3' | 'title' | 'subtitle' | 'body1' | 'body2';
   color?: string;
   style?: StyleProp<TextStyle>;
 } & Margin;
@@ -17,6 +17,10 @@ const Text = ({children, variant, style, color, m, mt, mb, mr, ml, my, mx}: Prop
     marginRight: mr || mx || m,
     marginLeft: ml || mx || m,
   };
+
+  if (variant === 'h3') {
+    return <RNText style={[{fontSize: 18, fontWeight: '700', color: color}, margin, style]}>{children}</RNText>;
+  }
 
   if (variant === 'body1') {
     return <RNText style={[{fontSize: 12, color: color}, margin, style]}>{children}</RNText>;

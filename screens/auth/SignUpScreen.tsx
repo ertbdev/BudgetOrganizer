@@ -33,29 +33,19 @@ const SignInScreen = ({navigation}: Props) => {
     navigation.replace('SignInScreen');
   };
 
-  const handleForgotPasswordPress = () => {
-    //todo
-  };
-
   const handleSignIn = async () => {
     setLoading(true);
     try {
       await signUpUser(values.email, values.password);
     } catch (err) {
-      setBackendError(err as string);
+      const error = (err as string).split('/')[1].replace(/-/g, '_');
+      setBackendError(error);
     }
     setLoading(false);
   };
 
-  const handleGoogleSignIn = () => {
-    //todo
-  };
-
   const handleChangeEmail = (value: string) => {
-    // if (backendError?.includes('email-already-in-use')) {
-    //   dispatch(clearErrorMessage());
-    //   setBackendError('');
-    // }
+    backendError && setBackendError(undefined);
     setFieldValue('email', value);
   };
 
@@ -110,7 +100,9 @@ const SignInScreen = ({navigation}: Props) => {
           onRightPress={toggleShowPassword}
         />
 
-        <Button minWidth="88%" height={50} mt={20} loading={loading} onPress={handleSubmit}>
+        {backendError ? <Text color={palette.error.main}>{i18n.t(`errors.${backendError}`)}</Text> : null}
+
+        <Button minWidth="88%" height={50} mt={20} loading={loading} disabled={Boolean(backendError)} onPress={handleSubmit}>
           {i18n.t('sign_up')}
         </Button>
       </Container>
