@@ -14,3 +14,20 @@ export type Margin = {
   //** margin horizontal*/
   mx?: number | string;
 };
+
+export type Padding = {
+  //** padding */
+  p?: number | string;
+  //** padding top*/
+  pt?: number | string;
+  //** padding bottom*/
+  pb?: number | string;
+  //** padding right*/
+  pr?: number | string;
+  //** padding left*/
+  pl?: number | string;
+  //** padding vertical*/
+  py?: number | string;
+  //** padding horizontal*/
+  px?: number | string;
+};

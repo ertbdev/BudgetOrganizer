@@ -8,23 +8,27 @@ import {useTheme} from 'styled-components/native';
 import Text from '../../components/common/Text';
 import Button from '../../components/common/Button';
 import i18n from '../../assets/locale/i18n';
-import GoogleLogo from '../../assets/svg/GoogleLogo';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/navigation';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'SignInScreen'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'SignUpScreen'>;
 
 const SignInScreen = ({navigation}: Props) => {
   const {palette} = useTheme();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const toggleShowPassword = () => {
     setShowPassword(value => !value);
   };
 
-  const handleSignUpPress = () => {
-    navigation.replace('SignUpScreen');
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(value => !value);
+  };
+
+  const handleSignInPress = () => {
+    navigation.replace('SignInScreen');
   };
 
   const handleForgotPasswordPress = () => {
@@ -53,6 +57,7 @@ const SignInScreen = ({navigation}: Props) => {
           keyboardType="email-address"
           left={<Icon name="at" size={25} color={palette.gray[500]} />}
         />
+
         <TextInput
           label={`${i18n.t('password')}:`}
           placeholder={i18n.t('enter-password')}
@@ -63,29 +68,25 @@ const SignInScreen = ({navigation}: Props) => {
           onRightPress={toggleShowPassword}
         />
 
-        <Button mode="text" textSize={16} mt={5} onPress={handleForgotPasswordPress}>
-          {i18n.t('forgot-password')}?
-        </Button>
+        <TextInput
+          label={`${i18n.t('confirm-password')}:`}
+          placeholder={i18n.t('enter-password')}
+          secureTextEntry={!showConfirmPassword}
+          width={'90%'}
+          left={<Icon name="lock" size={25} color={palette.gray[500]} />}
+          right={<Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size={25} color={palette.gray[500]} />}
+          onRightPress={toggleShowConfirmPassword}
+        />
 
         <Button minWidth="88%" height={50} mt={20} loading={false} onPress={handleSubmit}>
-          {i18n.t('sign-in')}
+          {i18n.t('sign-up')}
         </Button>
-
-        <>
-          <Text mt={30} mb={20}>
-            -- {i18n.t('or')} --
-          </Text>
-          <Text>{i18n.t('sign-in-with')}</Text>
-          <Button mode="rounded" buttonColor="#FFF" height={50} mt={20} onPress={handleGoogleSignIn}>
-            <GoogleLogo size={26} />
-          </Button>
-        </>
       </Container>
 
-      <RowContainer pt={20} justifyContent="center">
-        <Text>{i18n.t('do-not-have-account')} </Text>
-        <Button mode="text" textSize={14} onPress={handleSignUpPress}>
-          {i18n.t('sign-up')}
+      <RowContainer pt={20} justifyContent="center" alignItems="flex-end">
+        <Text>{i18n.t('have-account')} </Text>
+        <Button mode="text" textSize={14} onPress={handleSignInPress}>
+          {i18n.t('sign-in')}
         </Button>
       </RowContainer>
     </MainContainer>
