@@ -9,11 +9,12 @@ export type BottomTabsParamList = {
 
 export type RootStackParamList = {
   AddExpenseScreen: undefined;
+  AddIncomeScreen: undefined;
   BottomTabs: NavigatorScreenParams<BottomTabsParamList>;
   ExpensesScreen: undefined;
   ForgotPasswordScreen: undefined;
   HomeScreen: undefined;
-  LandingScreen: undefined;
+  OptionsModal: {tabBarHeight?: number};
   SignInScreen: undefined;
   SignUpScreen: undefined;
 };

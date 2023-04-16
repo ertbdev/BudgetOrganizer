@@ -10,7 +10,6 @@ import dayjs from 'dayjs';
 
 type Props = {
   id?: string;
-  index: number;
   description: string;
   amount: number;
   account: string;
@@ -18,40 +17,33 @@ type Props = {
   date: number;
 };
 
-const ExpenseCard = ({id, index, description, amount, account, category, date}: Props) => {
+const ExpenseCard = ({id, description, amount, account, category, date}: Props) => {
   const {palette} = useTheme();
   return (
-    <>
-      {index === 0 ? (
-        <Text variant="title" color={palette.gray[600]} mb={10}>
-          {dayjs(date).format('DD MMMM YYYY')}
-        </Text>
-      ) : null}
-      <Card minHeight={50} width={'100%'}>
-        <RowContainer variant="full-width" justifyContent="space-between" py={10} px={20}>
-          <RowContainer justifyContent="flex-start" style={{flex: 1}}>
-            {categories[category]?.materialCommunityIcon ? (
-              <Container w={30} mr={10}>
-                <MaterialCommunityIcons name={categories[category].materialCommunityIcon} size={26} color={palette.gray[500]} />
-              </Container>
-            ) : null}
-            <Container alignItems="flex-start" style={{flex: 1}}>
-              <Text variant="body1" numberOfLines={2}>
-                {description}
-              </Text>
-              <Text variant="subtitle1" mt={5} color={palette.gray[500]}>
-                {account}
-              </Text>
+    <Card minHeight={50} width={'100%'}>
+      <RowContainer variant="full-width" justifyContent="space-between" py={10} px={20}>
+        <RowContainer justifyContent="flex-start" style={{flex: 1}}>
+          {categories[category]?.materialCommunityIcon ? (
+            <Container w={30} mr={10}>
+              <MaterialCommunityIcons name={categories[category].materialCommunityIcon} size={26} color={palette.gray[500]} />
             </Container>
-          </RowContainer>
-          <Container pl={20}>
-            <Text variant="subtitle2" color={palette.error.light}>
-              {'zł'} {getNumberWithCommas(+amount || 0)}
+          ) : null}
+          <Container alignItems="flex-start" style={{flex: 1}}>
+            <Text variant="body1" numberOfLines={2}>
+              {description}
+            </Text>
+            <Text variant="subtitle1" mt={5} color={palette.gray[500]}>
+              {account}
             </Text>
           </Container>
         </RowContainer>
-      </Card>
-    </>
+        <Container pl={20}>
+          <Text variant="subtitle2" color={palette.error.light}>
+            {'zł'} {getNumberWithCommas(+amount || 0)}
+          </Text>
+        </Container>
+      </RowContainer>
+    </Card>
   );
 };
 

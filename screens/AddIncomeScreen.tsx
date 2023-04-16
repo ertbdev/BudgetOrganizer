@@ -16,20 +16,17 @@ import Button from '../components/common/Button';
 import AccountsModal from '../components/AccountsModal';
 import {useFormik} from 'formik';
 import dayjs from 'dayjs';
-import CategoriesModal from '../components/CategoriesModal';
 import {useAppDispatch} from '../hooks/redux';
-import {addNewExpense} from '../redux/budgetSlice';
-import {expenseSchema} from '../schemas/expenseSchema';
 import {DateTimePickerEvent, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
-import {Expense} from '../models/expense';
+import {incomeSchema} from '../schemas/incomeSchema';
+import {Income} from '../models/income';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'AddExpenseScreen'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'AddIncomeScreen'>;
 
-const AddExpenseScreen = ({navigation}: Props) => {
+const AddIncomeScreen = ({navigation}: Props) => {
   const {palette} = useTheme();
 
   const [showAccountsModal, setShowAccountsModal] = useState(false);
-  const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -52,20 +49,6 @@ const AddExpenseScreen = ({navigation}: Props) => {
     handleCloseAccountsModal();
   };
 
-  const handleCategoryPress = () => {
-    Keyboard.dismiss();
-    setShowCategoriesModal(true);
-  };
-
-  const handleCloseCategoriesModal = () => {
-    setShowCategoriesModal(false);
-  };
-
-  const handleSetCategory = (category: string) => {
-    setFieldValue('category', category);
-    handleCloseCategoriesModal();
-  };
-
   const handleSetDate = (event: DateTimePickerEvent, date?: Date) => {
     date && setFieldValue('date', date.getTime());
   };
@@ -77,27 +60,26 @@ const AddExpenseScreen = ({navigation}: Props) => {
 
   const handleAddExpense = async () => {
     setLoading(true);
-    const expense: Expense = {
+    const income: Income = {
       description: values.description,
       account: values.account,
-      category: values.category,
       amount: +values.amount,
       date: values.date,
     };
-    await dispatch(addNewExpense(expense));
+    // await dispatch(addNewExpense(income));
     setLoading(false);
     handleGoBackPress();
   };
 
   const {setFieldValue, handleChange, handleSubmit, handleBlur, values, errors, touched} = useFormik({
-    validationSchema: expenseSchema,
-    initialValues: {account: '', amount: '', date: new Date().getTime(), description: '', category: ''},
+    validationSchema: incomeSchema,
+    initialValues: {account: '', amount: '', date: new Date().getTime(), description: ''},
     onSubmit: handleAddExpense,
   });
 
   return (
     <MainContainer justifyContent="flex-start">
-      <ScreenHeader title="Add Expense" onBackPress={handleGoBackPress} />
+      <ScreenHeader title="Add Income" onBackPress={handleGoBackPress} />
       <KeyboardAvoidanceContainer>
         <Container>
           {/* <Text>add receipt</Text>
@@ -136,18 +118,6 @@ const AddExpenseScreen = ({navigation}: Props) => {
           />
 
           <TextInput
-            placeholder="Category"
-            value={values.category}
-            onBlur={handleBlur('category')}
-            error={touched.category && Boolean(errors.category)}
-            width={'90%'}
-            showSoftInputOnFocus={false}
-            capitalize
-            onFocus={handleCategoryPress}
-            left={<FontAwesome5 name="shapes" size={25} color={palette.gray[500]} />}
-          />
-
-          <TextInput
             placeholder="Date"
             value={dayjs(values.date).format('DD MMMM YYYY')}
             onBlur={handleBlur('date')}
@@ -165,10 +135,8 @@ const AddExpenseScreen = ({navigation}: Props) => {
       </KeyboardAvoidanceContainer>
 
       <AccountsModal showModal={showAccountsModal} onAccountPress={handleSetAccount} onClosePress={handleCloseAccountsModal} />
-
-      <CategoriesModal showModal={showCategoriesModal} onItemPress={handleSetCategory} onClosePress={handleCloseCategoriesModal} />
     </MainContainer>
   );
 };
 
-export default AddExpenseScreen;
+export default AddIncomeScreen;

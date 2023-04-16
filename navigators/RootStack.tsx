@@ -8,18 +8,19 @@ import {RootStackParamList} from '../types/navigation';
 import SignInScreen from '../screens/auth/SignInScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
 import {useAuthContext} from '../providers/AuthProvider';
-import HomeScreen from '../screens/Tabs/HomeSceen';
 import MainContainer from '../components/common/MainContainer';
 
 import {useTheme} from 'styled-components/native';
 import BottomTabs from './BottomTabs';
 import AddExpenseScreen from '../screens/AddExpenseScreen';
 
-import firestore, {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {Expense} from '../models/expense';
 import {useAppDispatch} from '../hooks/redux';
 import {setExpenses} from '../redux/budgetSlice';
 import {expensesSubscriber} from '../firebase/functions/expenses';
+import OptionsModal from '../screens/modals/OptionsModal';
+import AddIncomeScreen from '../screens/AddIncomeScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -63,7 +64,13 @@ const RootStack = () => {
         ) : (
           <Stack.Group>
             <Stack.Screen name="BottomTabs" component={BottomTabs} />
+            <Stack.Screen name="AddIncomeScreen" component={AddIncomeScreen} />
             <Stack.Screen name="AddExpenseScreen" component={AddExpenseScreen} />
+            <Stack.Screen
+              options={{presentation: 'transparentModal', animation: 'fade_from_bottom', animationDuration: 50}}
+              name="OptionsModal"
+              component={OptionsModal}
+            />
           </Stack.Group>
         )}
       </Stack.Navigator>

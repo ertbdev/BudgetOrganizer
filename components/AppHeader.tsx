@@ -29,8 +29,8 @@ const AppHeader = ({navigation, layout}: BottomTabHeaderProps) => {
     elevation: 5,
   };
 
-  const handleAddExpensePress = () => {
-    navigation.navigate('AddExpenseScreen');
+  const handleOpenOptions = () => {
+    navigation.navigate('OptionsModal', {tabBarHeight});
   };
 
   return (
@@ -43,7 +43,7 @@ const AppHeader = ({navigation, layout}: BottomTabHeaderProps) => {
 
       {showAddButton ? (
         <View style={{position: 'absolute', top: layout.height - (tabBarHeight + 80), right: 20}}>
-          <Button mode="rounded" height={60} onPress={handleAddExpensePress}>
+          <Button mode="rounded" height={60} onPress={handleOpenOptions}>
             <MaterialIcons name="add" color={palette.background.default} size={35} />
           </Button>
         </View>
