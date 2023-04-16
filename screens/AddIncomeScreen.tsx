@@ -20,6 +20,7 @@ import {useAppDispatch} from '../hooks/redux';
 import {DateTimePickerEvent, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import {incomeSchema} from '../schemas/incomeSchema';
 import {Income} from '../models/income';
+import {addNewIncome} from '../redux/budgetSlice';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddIncomeScreen'>;
 
@@ -66,7 +67,7 @@ const AddIncomeScreen = ({navigation}: Props) => {
       amount: +values.amount,
       date: values.date,
     };
-    // await dispatch(addNewExpense(income));
+    await dispatch(addNewIncome(income));
     setLoading(false);
     handleGoBackPress();
   };

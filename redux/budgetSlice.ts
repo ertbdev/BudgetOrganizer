@@ -2,18 +2,31 @@ import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './store';
 import {Expense} from '../models/expense';
 import {addExpense, getExpenses} from '../firebase/functions/expenses';
+import {Income} from '../models/income';
+import {addIncome} from '../firebase/functions/incomes';
 
 type BudgetSliceProps = {
   expenses: Expense[];
+  incomes: Income[];
 };
 
 const initialState: BudgetSliceProps = {
   expenses: [],
+  incomes: [],
 };
 
 export const addNewExpense = createAsyncThunk<void, Expense, {state: RootState}>('budgetSlice/addNewExpense', async (expense, thunkAPI) => {
   try {
     await addExpense(expense);
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    return thunkAPI.rejectWithValue(firebaseError.code);
+  }
+});
+
+export const addNewIncome = createAsyncThunk<void, Income, {state: RootState}>('budgetSlice/addNewIncome', async (income, thunkAPI) => {
+  try {
+    await addIncome(income);
   } catch (err) {
     const firebaseError = err as {code: string};
     return thunkAPI.rejectWithValue(firebaseError.code);
@@ -40,6 +53,9 @@ const budgetSlice = createSlice({
     setExpenses(state, action: PayloadAction<Expense[]>) {
       state.expenses = action.payload;
     },
+    setIncomes(state, action: PayloadAction<Income[]>) {
+      state.incomes = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -56,6 +72,6 @@ const budgetSlice = createSlice({
   },
 });
 
-export const {resetBudgetSlice, setExpenses} = budgetSlice.actions;
+export const {resetBudgetSlice, setExpenses, setIncomes} = budgetSlice.actions;
 
 export default budgetSlice.reducer;

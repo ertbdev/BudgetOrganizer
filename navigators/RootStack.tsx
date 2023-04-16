@@ -17,10 +17,11 @@ import AddExpenseScreen from '../screens/AddExpenseScreen';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {Expense} from '../models/expense';
 import {useAppDispatch} from '../hooks/redux';
-import {setExpenses} from '../redux/budgetSlice';
+import {setExpenses, setIncomes} from '../redux/budgetSlice';
 import {expensesSubscriber} from '../firebase/functions/expenses';
 import OptionsModal from '../screens/modals/OptionsModal';
 import AddIncomeScreen from '../screens/AddIncomeScreen';
+import {incomesSubscriber} from '../firebase/functions/incomes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -35,14 +36,25 @@ const RootStack = () => {
     dispatch(setExpenses(expenses));
   }, []);
 
+  const getIncomesData = useCallback((snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
+    const expenses: Expense[] = [];
+    snapshot.forEach(doc => expenses.push(doc.data() as Expense));
+    dispatch(setIncomes(expenses));
+  }, []);
+
   useEffect(() => {
-    let subscriber: (() => void) | undefined = undefined;
+    let exSubscriber: (() => void) | undefined = undefined;
+    let inSubscriber: (() => void) | undefined = undefined;
 
     if (authenticated && user?.id) {
-      subscriber = expensesSubscriber(user.id, getExpensesData);
+      exSubscriber = expensesSubscriber(user.id, getExpensesData);
+      inSubscriber = incomesSubscriber(user.id, getIncomesData);
     }
 
-    return () => subscriber && subscriber();
+    return () => {
+      exSubscriber && exSubscriber();
+      inSubscriber && inSubscriber();
+    };
   }, [authenticated, user]);
 
   if (authenticated === undefined) {

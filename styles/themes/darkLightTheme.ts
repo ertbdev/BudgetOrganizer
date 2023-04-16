@@ -21,6 +21,7 @@ export const darkLightTheme = (dark?: boolean) => {
         secondary: dark ? '#fff' : '#000',
       },
       error: {main: '#FF0000', light: '#EF5350'},
+      success: {main: '#2E7D32', light: '#4CAF50'},
       gray: {
         50: '#FAFAFA',
         100: '#F5F5F5',

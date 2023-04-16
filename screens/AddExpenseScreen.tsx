@@ -11,7 +11,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/navigation';
 import {useTheme} from 'styled-components';
 
-import {FontAwesome, FontAwesome5} from '@expo/vector-icons';
+import {FontAwesome, FontAwesome5, Entypo} from '@expo/vector-icons';
 import Button from '../components/common/Button';
 import AccountsModal from '../components/AccountsModal';
 import {useFormik} from 'formik';
@@ -22,6 +22,7 @@ import {addNewExpense} from '../redux/budgetSlice';
 import {expenseSchema} from '../schemas/expenseSchema';
 import {DateTimePickerEvent, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import {Expense} from '../models/expense';
+import Text from '../components/common/Text';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddExpenseScreen'>;
 
@@ -100,8 +101,8 @@ const AddExpenseScreen = ({navigation}: Props) => {
       <ScreenHeader title="Add Expense" onBackPress={handleGoBackPress} />
       <KeyboardAvoidanceContainer>
         <Container>
-          {/* <Text>add receipt</Text>
-          <FontAwesome5 name="receipt" size={40} color={palette.gray[800]} /> */}
+          <Entypo name="add-to-list" size={40} color={palette.gray[800]} />
+          <Text>Add receipt</Text>
         </Container>
 
         <Container variant="full-width">
