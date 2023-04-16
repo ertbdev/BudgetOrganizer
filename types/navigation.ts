@@ -8,6 +8,7 @@ export type BottomTabsParamList = {
 };
 
 export type RootStackParamList = {
+  AddExpenseScreen: undefined;
   BottomTabs: NavigatorScreenParams<BottomTabsParamList>;
   ExpensesScreen: undefined;
   ForgotPasswordScreen: undefined;

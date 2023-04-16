@@ -13,6 +13,7 @@ import MainContainer from '../components/common/MainContainer';
 
 import {useTheme} from 'styled-components/native';
 import BottomTabs from './BottomTabs';
+import AddExpenseScreen from '../screens/AddExpenseScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -40,6 +41,7 @@ const RootStack = () => {
         ) : (
           <Stack.Group>
             <Stack.Screen name="BottomTabs" component={BottomTabs} />
+            <Stack.Screen name="AddExpenseScreen" component={AddExpenseScreen} />
           </Stack.Group>
         )}
       </Stack.Navigator>

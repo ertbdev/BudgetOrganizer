@@ -22,6 +22,10 @@ const Text = ({children, variant, style, color, m, mt, mb, mr, ml, my, mx}: Prop
     return <RNText style={[{fontSize: 18, fontWeight: '700', color: color}, margin, style]}>{children}</RNText>;
   }
 
+  if (variant === 'title') {
+    return <RNText style={[{fontSize: 16, fontWeight: '700', color: color}, margin, style]}>{children}</RNText>;
+  }
+
   if (variant === 'body1') {
     return <RNText style={[{fontSize: 12, color: color}, margin, style]}>{children}</RNText>;
   }

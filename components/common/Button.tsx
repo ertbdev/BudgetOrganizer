@@ -43,7 +43,7 @@ const Button = ({
   disabled = false,
   height = 50,
   minWidth,
-  borderRadius = 15,
+  borderRadius,
   buttonColor,
   textColor,
   textSize,
@@ -67,8 +67,9 @@ const Button = ({
   const _textColor =
     disabled && mode === 'text' ? palette.gray[600] : textColor ? textColor : mode === 'text' ? palette.primary.main : palette.common.white;
   const _buttonColor = mode === 'text' ? 'transparent' : disabled ? palette.gray[600] : buttonColor || palette.primary.main;
+  const _borderRadius = borderRadius || height * 0.3;
 
-  const styles = makeStyles(palette, mode, height, borderRadius, minWidth, _buttonColor, _textColor, _textSize);
+  const styles = makeStyles(mode, height, _borderRadius, minWidth, _buttonColor, _textColor, _textSize);
 
   const shadowStyle = {
     shadowColor: shadowColor ? shadowColor : palette.text.primary,
@@ -98,7 +99,6 @@ const Button = ({
 };
 
 const makeStyles = (
-  palette: Palette,
   mode: 'text' | 'contained' | 'rounded',
   height: number,
   borderRadius: number,

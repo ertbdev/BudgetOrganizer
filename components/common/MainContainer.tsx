@@ -4,6 +4,7 @@ import {KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Keyboard, Pl
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScreenContainer} from '../../styles/styledComponents/containers';
 import {Padding} from '../../types/container';
+import KeyboardAvoidanceContainer from './KeyboardAvoidanceContainer';
 
 type Props = {
   children?: React.ReactNode;
@@ -14,10 +15,6 @@ type Props = {
 } & Padding;
 
 const MainContainer = ({children, style, justifyContent, alignItems, variant = 'default', p, pb, pl, pr, pt, px, py}: Props) => {
-  const handleKeyboardDismiss = () => {
-    Keyboard.dismiss();
-  };
-
   const padding = {
     paddingBottom: pb || py || p,
     paddingTop: pt || py || p,
@@ -32,15 +29,9 @@ const MainContainer = ({children, style, justifyContent, alignItems, variant = '
           {children}
         </ScreenContainer>
       ) : (
-        <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
-            <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
-              <ScreenContainer justifyContent={justifyContent} alignItems={alignItems} style={[padding, style]}>
-                {children}
-              </ScreenContainer>
-            </TouchableWithoutFeedback>
-          </ScrollView>
-        </KeyboardAvoidingView>
+        <KeyboardAvoidanceContainer alignItems={alignItems} justifyContent={justifyContent} style={[padding, style]}>
+          {children}
+        </KeyboardAvoidanceContainer>
       )}
     </SafeAreaView>
   );

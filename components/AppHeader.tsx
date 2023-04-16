@@ -1,14 +1,24 @@
 import React from 'react';
 
 import {RowContainer} from '../styles/styledComponents/containers';
+import {View} from 'react-native';
 
 import type {BottomTabHeaderProps} from '@react-navigation/bottom-tabs';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Text from './common/Text';
 import {useTheme} from 'styled-components/native';
+import Button from './common/Button';
 
-const AppHeader = ({navigation}: BottomTabHeaderProps) => {
+import {MaterialIcons} from '@expo/vector-icons';
+
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+
+const AppHeader = ({navigation, layout}: BottomTabHeaderProps) => {
   const {palette} = useTheme();
+
+  const tabBarHeight = useBottomTabBarHeight();
+
+  const showAddButton = navigation.getState().index !== 3;
 
   const shadowStyle = {
     shadowColor: palette.text.primary,
@@ -18,6 +28,10 @@ const AppHeader = ({navigation}: BottomTabHeaderProps) => {
     elevation: 5,
   };
 
+  const handleAddExpensePress = () => {
+    navigation.navigate('AddExpenseScreen');
+  };
+
   return (
     <SafeAreaView style={{flex: 1}} edges={['top', 'left', 'right']}>
       <RowContainer height={60} bg={palette.gray[100]} justifyContent="space-between" px={20} style={shadowStyle}>
@@ -25,6 +39,14 @@ const AppHeader = ({navigation}: BottomTabHeaderProps) => {
           <Text color={palette.primary.main}>Budget</Text>Organizer
         </Text>
       </RowContainer>
+
+      {showAddButton ? (
+        <View style={{position: 'absolute', top: layout.height - (tabBarHeight + 80), right: 20}}>
+          <Button mode="rounded" height={60} onPress={handleAddExpensePress}>
+            <MaterialIcons name="add" color={palette.background.default} size={35} />
+          </Button>
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 };
