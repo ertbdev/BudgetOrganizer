@@ -37,6 +37,9 @@ const budgetSlice = createSlice({
     resetBudgetSlice() {
       return {...initialState};
     },
+    setExpenses(state, action: PayloadAction<Expense[]>) {
+      state.expenses = action.payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -53,6 +56,6 @@ const budgetSlice = createSlice({
   },
 });
 
-export const {resetBudgetSlice} = budgetSlice.actions;
+export const {resetBudgetSlice, setExpenses} = budgetSlice.actions;
 
 export default budgetSlice.reducer;

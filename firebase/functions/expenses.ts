@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {Expense} from '../../models/expense';
 import auth from '@react-native-firebase/auth';
 
@@ -40,4 +40,18 @@ export const getExpenses = async () => {
     console.error(firebaseError);
     throw firebaseError.code;
   }
+};
+
+export const expensesSubscriber = (
+  uid: string,
+  callback: (snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => void,
+) => {
+  const subscriber = firestore()
+    .collection('Users')
+    .doc(uid)
+    .collection('Expenses')
+    .orderBy('date', 'desc')
+    .onSnapshot(callback, err => console.error(err));
+
+  return subscriber;
 };

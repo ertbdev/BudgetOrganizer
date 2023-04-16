@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 
 import {ActivityIndicator} from 'react-native';
 
@@ -15,12 +15,34 @@ import {useTheme} from 'styled-components/native';
 import BottomTabs from './BottomTabs';
 import AddExpenseScreen from '../screens/AddExpenseScreen';
 
+import firestore, {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import {Expense} from '../models/expense';
+import {useAppDispatch} from '../hooks/redux';
+import {setExpenses} from '../redux/budgetSlice';
+import {expensesSubscriber} from '../firebase/functions/expenses';
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack = () => {
-  const {authenticated} = useAuthContext();
-
   const {palette} = useTheme();
+  const {authenticated, user} = useAuthContext();
+  const dispatch = useAppDispatch();
+
+  const getExpensesData = useCallback((snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
+    const expenses: Expense[] = [];
+    snapshot.forEach(doc => expenses.push(doc.data() as Expense));
+    dispatch(setExpenses(expenses));
+  }, []);
+
+  useEffect(() => {
+    let subscriber: (() => void) | undefined = undefined;
+
+    if (authenticated && user?.id) {
+      subscriber = expensesSubscriber(user.id, getExpensesData);
+    }
+
+    return () => subscriber && subscriber();
+  }, [authenticated, user]);
 
   if (authenticated === undefined) {
     return (

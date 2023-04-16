@@ -85,6 +85,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
 
   const getLoggedUser = useCallback(async (loggedUser: FirebaseAuthTypes.User | null) => {
     setAuthenticated(loggedUser !== null);
+    loggedUser && setUser({id: loggedUser.uid, email: loggedUser.email || '', name: '', creationTime: 0});
   }, []);
 
   useEffect(() => {
