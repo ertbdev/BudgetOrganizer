@@ -7,6 +7,7 @@ import Text from './common/Text';
 import {useTheme} from 'styled-components/native';
 
 import {MaterialIcons} from '@expo/vector-icons';
+import {APP_HEADER_HEIGHT} from '../assets/constants/appDefaults';
 
 type Props = {
   title?: string;
@@ -25,7 +26,7 @@ const ScreenHeader = ({title, onBackPress}: Props) => {
   };
 
   return (
-    <RowContainer height={60} bg={palette.gray[100]} px={20} style={shadowStyle}>
+    <RowContainer variant="full-width" h={APP_HEADER_HEIGHT} bg={palette.gray[100]} px={20} style={shadowStyle}>
       <TouchableOpacity style={{position: 'absolute', left: 20}} activeOpacity={0.8} onPress={onBackPress}>
         <MaterialIcons name="arrow-back" size={28} />
       </TouchableOpacity>

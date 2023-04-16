@@ -36,6 +36,8 @@ type Props = {
   textColor?: string;
   /** Determines the text size of the button */
   textSize?: number;
+  /**capitalize */
+  capitalize?: boolean;
   onPress?: () => void;
 } & Margin;
 
@@ -59,6 +61,7 @@ const Button = ({
   ml,
   my,
   mx,
+  capitalize,
   onPress,
 }: Props) => {
   const {palette} = useTheme();
@@ -69,7 +72,7 @@ const Button = ({
   const _buttonColor = mode === 'text' ? 'transparent' : disabled ? palette.gray[600] : buttonColor || palette.primary.main;
   const _borderRadius = borderRadius || height * 0.3;
 
-  const styles = makeStyles(mode, height, _borderRadius, minWidth, _buttonColor, _textColor, _textSize);
+  const styles = makeStyles(mode, height, _borderRadius, minWidth, _buttonColor, _textColor, _textSize, capitalize);
 
   const shadowStyle = {
     shadowColor: shadowColor ? shadowColor : palette.text.primary,
@@ -106,6 +109,7 @@ const makeStyles = (
   buttonColor?: string,
   textColor?: string,
   textSize?: number,
+  capitalize?: boolean,
 ) =>
   StyleSheet.create({
     container: {
@@ -123,6 +127,7 @@ const makeStyles = (
       fontSize: textSize,
       fontWeight: '600',
       color: textColor,
+      textTransform: capitalize ? 'capitalize' : 'none',
     },
     activitiIndicator: {
       marginRight: mode === 'rounded' ? 0 : 10,

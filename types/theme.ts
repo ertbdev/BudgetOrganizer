@@ -1,5 +1,6 @@
 type PaletteColor = {
   main: string;
+  light: string;
 };
 
 type BackgroundColor = {

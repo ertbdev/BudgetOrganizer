@@ -15,7 +15,7 @@ type Props = {
 const AccountsModal = ({showModal, onClosePress, onAccountPress}: Props) => {
   return (
     <Modal visible={showModal} animationType="fade" transparent={true}>
-      <Container height={'100%'}>
+      <Container variant="full">
         <Card p={20} width={'90%'} minHeight={150} justifyContent="space-between">
           <Text variant="title">Select an Account</Text>
           <Container py={20}>

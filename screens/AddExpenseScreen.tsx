@@ -1,10 +1,10 @@
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 
-import {Keyboard, TextInput as RNTextInput} from 'react-native';
+import {Keyboard} from 'react-native';
 
 import MainContainer from '../components/common/MainContainer';
 import Text from '../components/common/Text';
-import {Container, RowContainer} from '../styles/styledComponents/containers';
+import {Container} from '../styles/styledComponents/containers';
 import TextInput from '../components/common/TextInput';
 import ScreenHeader from '../components/ScreenHeader';
 import KeyboardAvoidanceContainer from '../components/common/KeyboardAvoidanceContainer';
@@ -14,11 +14,13 @@ import {useTheme} from 'styled-components';
 
 import {FontAwesome, FontAwesome5} from '@expo/vector-icons';
 import Button from '../components/common/Button';
-import {Card} from '../styles/styledComponents/card';
 import AccountsModal from '../components/AccountsModal';
 import {useFormik} from 'formik';
 import dayjs from 'dayjs';
 import CategoriesModal from '../components/CategoriesModal';
+import {useAppDispatch} from '../hooks/redux';
+import {addNewExpense} from '../redux/budgetSlice';
+import {expenseSchema} from '../schemas/ExpenseSchema';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddExpenseScreen'>;
 
@@ -27,6 +29,8 @@ const AddExpenseScreen = ({navigation}: Props) => {
 
   const [showAccountsModal, setShowAccountsModal] = useState(false);
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
+
+  const dispatch = useAppDispatch();
 
   const handleGoBackPress = () => {
     navigation.goBack();
@@ -65,11 +69,19 @@ const AddExpenseScreen = ({navigation}: Props) => {
   };
 
   const handleAddExpense = () => {
-    // TODO
+    dispatch(
+      addNewExpense({
+        description: values.description,
+        account: values.account,
+        category: values.category,
+        amount: +values.amount,
+        date: values.date,
+      }),
+    );
   };
 
   const {setFieldValue, handleChange, handleSubmit, handleBlur, values, errors, touched} = useFormik({
-    // validationSchema: signInSchema,
+    validationSchema: expenseSchema,
     initialValues: {account: '', amount: '', date: new Date().getTime(), description: '', category: ''},
     onSubmit: handleAddExpense,
   });
@@ -83,22 +95,22 @@ const AddExpenseScreen = ({navigation}: Props) => {
           <FontAwesome5 name="receipt" size={40} color={palette.gray[800]} />
         </Container>
 
-        <Container>
+        <Container variant="full-width">
           <TextInput
             placeholder="Description"
             value={values.description}
             onChangeText={handleChange('description')}
             onBlur={handleBlur('description')}
-            error={Boolean(errors.description)}
+            error={touched.description && Boolean(errors.description)}
             width={'90%'}
             left={<FontAwesome name="pencil-square-o" size={25} color={palette.gray[500]} />}
           />
           <TextInput
             placeholder="Amount"
-            value={values.amount}
+            value={values.amount.toString()}
             onChangeText={handleChange('amount')}
             onBlur={handleBlur('amount')}
-            error={Boolean(errors.amount)}
+            error={touched.amount && Boolean(errors.amount)}
             keyboardType="numeric"
             width={'90%'}
             left={<FontAwesome5 name="money-bill-wave" size={22} color={palette.gray[500]} />}
@@ -107,7 +119,7 @@ const AddExpenseScreen = ({navigation}: Props) => {
             placeholder="Account"
             value={values.account}
             onBlur={handleBlur('account')}
-            error={Boolean(errors.account)}
+            error={touched.account && Boolean(errors.account)}
             width={'90%'}
             showSoftInputOnFocus={false}
             onFocus={handleAccountPress}
@@ -118,9 +130,10 @@ const AddExpenseScreen = ({navigation}: Props) => {
             placeholder="Category"
             value={values.category}
             onBlur={handleBlur('category')}
-            error={Boolean(errors.category)}
+            error={touched.category && Boolean(errors.category)}
             width={'90%'}
             showSoftInputOnFocus={false}
+            capitalize
             onFocus={handleCategoryPress}
             left={<FontAwesome5 name="shapes" size={25} color={palette.gray[500]} />}
           />
@@ -129,7 +142,7 @@ const AddExpenseScreen = ({navigation}: Props) => {
             placeholder="Date"
             value={dayjs(values.date).format('DD.MMM YYYY (HH:mm)')}
             onBlur={handleBlur('date')}
-            error={Boolean(errors.date)}
+            error={touched.date && Boolean(errors.date)}
             width={'90%'}
             showSoftInputOnFocus={false}
             onFocus={handleDatePress}
@@ -137,9 +150,7 @@ const AddExpenseScreen = ({navigation}: Props) => {
           />
         </Container>
 
-        <Container>
-          <Button>Save</Button>
-        </Container>
+        <Button onPress={handleSubmit}>Save</Button>
       </KeyboardAvoidanceContainer>
 
       <AccountsModal showModal={showAccountsModal} onAccountPress={handleSetAccount} onClosePress={handleCloseAccountsModal} />

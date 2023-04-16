@@ -1,8 +1,8 @@
 import React from 'react';
 import {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import addUser from '../firebase/functions/addUser';
 import {User} from '../models/user';
+import {addUser} from '../firebase/functions/user';
 // import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 type AuthContext = {

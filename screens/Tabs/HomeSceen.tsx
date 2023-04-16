@@ -1,15 +1,12 @@
 import React from 'react';
 
-import {Text} from 'react-native';
 import MainContainer from '../../components/common/MainContainer';
-
-import {Card} from '../../styles/styledComponents/card';
-import AddExpenseCard from '../../components/AddExpenseCard';
+import Text from '../../components/common/Text';
 
 const HomeScreen = () => {
   return (
     <MainContainer>
-      <AddExpenseCard />
+      <Text>HOme</Text>
     </MainContainer>
   );
 };

@@ -1,21 +1,23 @@
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
-export const categories: {name: string; materialCommunityIcon: keyof typeof MaterialCommunityIcons.glyphMap}[] = [
-  {name: 'Debt', materialCommunityIcon: 'credit-card-minus'},
-  {name: 'Clothing', materialCommunityIcon: 'tshirt-crew'},
-  {name: 'Education', materialCommunityIcon: 'book-education'},
-  {name: 'Entertainment', materialCommunityIcon: 'glass-mug-variant'},
-  {name: 'Food', materialCommunityIcon: 'food'},
-  {name: 'Gifts/Donations', materialCommunityIcon: 'gift'},
-  {name: 'Healthcare', materialCommunityIcon: 'pill'},
-  {name: 'Household Items', materialCommunityIcon: 'tools'},
-  {name: 'Housing', materialCommunityIcon: 'home-minus'},
-  {name: 'Insurance', materialCommunityIcon: 'shield-home'},
-  {name: 'Personal', materialCommunityIcon: 'hair-dryer'},
-  {name: 'Savings', materialCommunityIcon: 'piggy-bank'},
-  {name: 'Transportation', materialCommunityIcon: 'bus'},
-  {name: 'Utilities', materialCommunityIcon: 'water'},
-  {name: 'Other', materialCommunityIcon: 'crosshairs-question'},
-];
+export const categories: {[key: string]: {materialCommunityIcon: keyof typeof MaterialCommunityIcons.glyphMap}} = {
+  debt: {materialCommunityIcon: 'credit-card-minus'},
+  clothing: {materialCommunityIcon: 'tshirt-crew'},
+  education: {materialCommunityIcon: 'book-education'},
+  entertainment: {materialCommunityIcon: 'glass-mug-variant'},
+  food: {materialCommunityIcon: 'food'},
+  'gifts/donations': {materialCommunityIcon: 'gift'},
+  healthcare: {materialCommunityIcon: 'pill'},
+  'household items': {materialCommunityIcon: 'tools'},
+  housing: {materialCommunityIcon: 'home-minus'},
+  insurance: {materialCommunityIcon: 'shield-home'},
+  personal: {materialCommunityIcon: 'hair-dryer'},
+  savings: {materialCommunityIcon: 'piggy-bank'},
+  transportation: {materialCommunityIcon: 'bus'},
+  utilities: {materialCommunityIcon: 'water'},
+  other: {materialCommunityIcon: 'crosshairs-question'},
+};
+
+export const categoryList = Object.keys(categories);
 
 export const accounts: string[] = ['Bank Account', 'Cash'];

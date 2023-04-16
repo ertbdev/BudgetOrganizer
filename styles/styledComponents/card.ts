@@ -17,7 +17,7 @@ type ContainerProps = {
 export const Card = styled.View<ContainerProps>`
   background-color: ${({theme, bg}) => bg || theme.palette.background.default};
   border-radius: ${({br}) => br || 10}px;
-  width: ${({width}) => (typeof width === 'string' ? width : width || 100 + 'px')};
+  width: ${({width}) => (width ? (typeof width === 'string' ? width : width + 'px') : '96%')};
   ${({minHeight}) => minHeight && `minHeight: ${typeof minHeight === 'string' ? minHeight : minHeight + 'px'};`}
   ${({maxHeight}) => maxHeight && `maxHeight: ${typeof maxHeight === 'string' ? maxHeight : maxHeight + 'px'};`}
 

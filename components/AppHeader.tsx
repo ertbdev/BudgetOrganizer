@@ -12,6 +12,7 @@ import Button from './common/Button';
 import {MaterialIcons} from '@expo/vector-icons';
 
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {APP_HEADER_HEIGHT} from '../assets/constants/appDefaults';
 
 const AppHeader = ({navigation, layout}: BottomTabHeaderProps) => {
   const {palette} = useTheme();
@@ -34,7 +35,7 @@ const AppHeader = ({navigation, layout}: BottomTabHeaderProps) => {
 
   return (
     <SafeAreaView style={{flex: 1}} edges={['top', 'left', 'right']}>
-      <RowContainer height={60} bg={palette.gray[100]} justifyContent="space-between" px={20} style={shadowStyle}>
+      <RowContainer h={APP_HEADER_HEIGHT} bg={palette.gray[100]} px={20} justifyContent="space-between" style={shadowStyle}>
         <Text variant="h3">
           <Text color={palette.primary.main}>Budget</Text>Organizer
         </Text>

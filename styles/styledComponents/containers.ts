@@ -2,18 +2,29 @@ import styled from 'styled-components/native';
 import {Margin, Padding} from '../../types/container';
 
 type ContainerProps = {
+  variant?: 'full' | 'full-width' | 'full-height' | 'auto';
   justifyContent?: 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
   alignItems?: 'center' | 'flex-start' | 'flex-end';
-  width?: string | number;
-  height?: string | number;
+  w?: string | number;
+  h?: string | number;
   bg?: string;
 } & Padding &
   Margin;
 
 export const Container = styled.View<ContainerProps>`
   ${({bg}) => bg && `background-color: ${bg};`}
-  width: ${({width}) => (width ? (typeof width === 'string' ? width : width + 'px') : '100%')};
-  ${({height}) => height && `height: ${typeof height === 'string' ? height : height + 'px'};`}
+
+  ${({variant}) =>
+    variant === 'full'
+      ? 'width:100%; height:100%;'
+      : variant === 'full-width'
+      ? 'width:100%;'
+      : variant === 'full-height'
+      ? 'height:100%;'
+      : ''}
+
+  ${({w}) => w && `width: ${typeof w === 'string' ? w : w + 'px'};`}
+  ${({h}) => h && `height: ${typeof h === 'string' ? h : h + 'px'};`}
 
   padding-top: ${({pt, py, p}) => (typeof (pt || py || p) === 'string' ? pt || py || p : (pt || py || p || 0) + 'px')};
   padding-bottom: ${({pb, py, p}) => (typeof (pb || py || p) === 'string' ? pb || py || p : (pb || py || p || 0) + 'px')};
@@ -32,8 +43,17 @@ export const Container = styled.View<ContainerProps>`
 export const RowContainer = styled.View<ContainerProps>`
   flex-direction: row;
   ${({bg}) => bg && `background-color: ${bg};`}
-  width: ${({width}) => (width ? (typeof width === 'string' ? width : width + 'px') : '100%')};
-  ${({height}) => height && `height: ${typeof height === 'string' ? height : height + 'px'};`}
+  ${({variant}) =>
+    variant === 'full'
+      ? 'width:100%; height:100%;'
+      : variant === 'full-width'
+      ? 'width:100%;'
+      : variant === 'full-height'
+      ? 'height:100%;'
+      : ''}
+
+  ${({w}) => w && `width: ${typeof w === 'string' ? w : w + 'px'};`}
+  ${({h}) => h && `height: ${typeof h === 'string' ? h : h + 'px'};`}
 
   padding-top: ${({pt, py, p}) => (typeof (pt || py || p) === 'string' ? pt || py || p : (pt || py || p || 0) + 'px')};
   padding-bottom: ${({pb, py, p}) => (typeof (pb || py || p) === 'string' ? pb || py || p : (pb || py || p || 0) + 'px')};

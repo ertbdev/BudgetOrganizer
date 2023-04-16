@@ -79,11 +79,11 @@ const SignInScreen = ({navigation}: Props) => {
 
   return (
     <MainContainer pb={20} justifyContent="space-around" variant="keyboard-avoidance">
-      <Container height={150} justifyContent="center">
+      <Container h={150} justifyContent="center">
         <Icon name="lock" size={70} color={palette.primary.main} />
       </Container>
 
-      <Container>
+      <Container variant='full-width'>
         <TextInput
           label={`${i18n.t('email_address')}:`}
           placeholder={i18n.t('enter_email_address')}
