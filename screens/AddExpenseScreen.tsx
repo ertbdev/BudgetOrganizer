@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Keyboard} from 'react-native';
+import {Keyboard, View} from 'react-native';
 
 import MainContainer from '../components/common/MainContainer';
 import Text from '../components/common/Text';
@@ -21,6 +21,9 @@ import CategoriesModal from '../components/CategoriesModal';
 import {useAppDispatch} from '../hooks/redux';
 import {addNewExpense} from '../redux/budgetSlice';
 import {expenseSchema} from '../schemas/ExpenseSchema';
+import {DateTimePickerEvent, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
+import {locale} from 'expo-localization';
+import {Expense} from '../models/expense';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddExpenseScreen'>;
 
@@ -29,6 +32,7 @@ const AddExpenseScreen = ({navigation}: Props) => {
 
   const [showAccountsModal, setShowAccountsModal] = useState(false);
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -64,20 +68,27 @@ const AddExpenseScreen = ({navigation}: Props) => {
     handleCloseCategoriesModal();
   };
 
-  const handleDatePress = () => {
-    Keyboard.dismiss();
+  const handleSetDate = (event: DateTimePickerEvent, date?: Date) => {
+    date && setFieldValue('date', date.getTime());
   };
 
-  const handleAddExpense = () => {
-    dispatch(
-      addNewExpense({
-        description: values.description,
-        account: values.account,
-        category: values.category,
-        amount: +values.amount,
-        date: values.date,
-      }),
-    );
+  const handleDatePress = () => {
+    Keyboard.dismiss();
+    DateTimePickerAndroid.open({value: new Date(), mode: 'date', onChange: handleSetDate});
+  };
+
+  const handleAddExpense = async () => {
+    setLoading(true);
+    const expense: Expense = {
+      description: values.description,
+      account: values.account,
+      category: values.category,
+      amount: +values.amount,
+      date: values.date,
+    };
+    await dispatch(addNewExpense(expense));
+    setLoading(false);
+    handleGoBackPress();
   };
 
   const {setFieldValue, handleChange, handleSubmit, handleBlur, values, errors, touched} = useFormik({
@@ -140,7 +151,7 @@ const AddExpenseScreen = ({navigation}: Props) => {
 
           <TextInput
             placeholder="Date"
-            value={dayjs(values.date).format('DD.MMM YYYY (HH:mm)')}
+            value={dayjs(values.date).format('DD MMMM YYYY')}
             onBlur={handleBlur('date')}
             error={touched.date && Boolean(errors.date)}
             width={'90%'}
@@ -150,7 +161,9 @@ const AddExpenseScreen = ({navigation}: Props) => {
           />
         </Container>
 
-        <Button onPress={handleSubmit}>Save</Button>
+        <Button loading={loading} minWidth={'40%'} onPress={handleSubmit}>
+          Save
+        </Button>
       </KeyboardAvoidanceContainer>
 
       <AccountsModal showModal={showAccountsModal} onAccountPress={handleSetAccount} onClosePress={handleCloseAccountsModal} />

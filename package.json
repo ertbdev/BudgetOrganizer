@@ -8,6 +8,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^7.0.1",
     "@react-native-firebase/app": "^17.4.2",
     "@react-native-firebase/auth": "^17.4.2",
     "@react-native-firebase/firestore": "^17.4.2",
@@ -32,8 +33,7 @@
     "react-redux": "^8.0.5",
     "styled-components": "^5.3.9",
     "yup": "^1.1.0",
-    "yup-password": "^0.2.2",
-    "@react-native-community/datetimepicker": "6.7.3"
+    "yup-password": "^0.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
