@@ -23,6 +23,38 @@ export const addIncome = async (data: Income) => {
   }
 };
 
+export const updateIncome = async (data: Partial<Income>) => {
+  const uid = auth().currentUser?.uid;
+
+  if (!uid) {
+    throw 'User is not logged in ';
+  }
+
+  try {
+    await firestore().collection('Users').doc(uid).collection('Incomes').doc(data.id).update(data);
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    console.error(firebaseError);
+    throw firebaseError.code;
+  }
+};
+
+export const deleteIncome = async (id: string) => {
+  const uid = auth().currentUser?.uid;
+
+  if (!uid) {
+    throw 'User is not logged in ';
+  }
+
+  try {
+    await firestore().collection('Users').doc(uid).collection('Incomes').doc(id).delete();
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    console.error(firebaseError);
+    throw firebaseError.code;
+  }
+};
+
 export const getIncomes = async () => {
   const uid = auth().currentUser?.uid;
 

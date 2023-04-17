@@ -1,9 +1,9 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './store';
 import {Expense} from '../models/expense';
-import {addExpense, getExpenses} from '../firebase/functions/expenses';
+import {addExpense, deleteExpense, getExpenses, updateExpense} from '../firebase/functions/expenses';
 import {Income} from '../models/income';
-import {addIncome} from '../firebase/functions/incomes';
+import {addIncome, deleteIncome, updateIncome} from '../firebase/functions/incomes';
 import dayjs from 'dayjs';
 
 type BudgetSliceProps = {
@@ -25,6 +25,42 @@ const initialState: BudgetSliceProps = {
 export const addNewExpense = createAsyncThunk<void, Expense, {state: RootState}>('budgetSlice/addNewExpense', async (expense, thunkAPI) => {
   try {
     await addExpense(expense);
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    return thunkAPI.rejectWithValue(firebaseError.code);
+  }
+});
+
+export const editExpense = createAsyncThunk<void, Expense, {state: RootState}>('budgetSlice/editExpense', async (expense, thunkAPI) => {
+  try {
+    await updateExpense(expense);
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    return thunkAPI.rejectWithValue(firebaseError.code);
+  }
+});
+
+export const removeExpense = createAsyncThunk<void, string, {state: RootState}>('budgetSlice/removeExpense', async (id, thunkAPI) => {
+  try {
+    await deleteExpense(id);
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    return thunkAPI.rejectWithValue(firebaseError.code);
+  }
+});
+
+export const editIncome = createAsyncThunk<void, Income, {state: RootState}>('budgetSlice/editIncome', async (income, thunkAPI) => {
+  try {
+    await updateIncome(income);
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    return thunkAPI.rejectWithValue(firebaseError.code);
+  }
+});
+
+export const removeIncome = createAsyncThunk<void, string, {state: RootState}>('budgetSlice/removeIncome', async (id, thunkAPI) => {
+  try {
+    await deleteIncome(id);
   } catch (err) {
     const firebaseError = err as {code: string};
     return thunkAPI.rejectWithValue(firebaseError.code);

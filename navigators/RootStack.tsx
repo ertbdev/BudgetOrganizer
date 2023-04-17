@@ -22,6 +22,7 @@ import {expensesSubscriber} from '../firebase/functions/expenses';
 import OptionsModal from '../screens/modals/OptionsModal';
 import AddIncomeScreen from '../screens/AddIncomeScreen';
 import {incomesSubscriber} from '../firebase/functions/incomes';
+import {Income} from '../models/income';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,14 +33,14 @@ const RootStack = () => {
 
   const getExpensesData = useCallback((snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
     const expenses: Expense[] = [];
-    snapshot.forEach(doc => expenses.push(doc.data() as Expense));
+    snapshot.forEach(doc => expenses.push({...doc.data(), id: doc.id} as Expense));
     dispatch(setExpenses(expenses));
   }, []);
 
   const getIncomesData = useCallback((snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
-    const expenses: Expense[] = [];
-    snapshot.forEach(doc => expenses.push(doc.data() as Expense));
-    dispatch(setIncomes(expenses));
+    const incomes: Income[] = [];
+    snapshot.forEach(doc => incomes.push({...doc.data(), id: doc.id} as Income));
+    dispatch(setIncomes(incomes));
   }, []);
 
   useEffect(() => {

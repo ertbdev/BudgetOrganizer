@@ -4,17 +4,26 @@ import {FlatList, View} from 'react-native';
 import MainContainer from '../../components/common/MainContainer';
 import {useAppSelector} from '../../hooks/redux';
 import Text from '../../components/common/Text';
-import dayjs from 'dayjs';
 import {useTheme} from 'styled-components/native';
 import IncomeCard from '../../components/IncomeCard';
-import {isDifferentDay} from '../../functions/isDifferentDay';
 import MonthSelector from '../../components/MonthSelector';
 import {Container} from '../../styles/styledComponents/containers';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {BottomTabsParamList, RootStackParamList} from '../../types/navigation';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 
-const IncomingsScreen = () => {
+type Props = BottomTabScreenProps<BottomTabsParamList, 'IncomesScreen'>;
+
+const IncomingsScreen = ({navigation}: Props) => {
   const incomes = useAppSelector(state => state.budgetSlice.monthlyIncomes);
+  const rootNavigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {palette} = useTheme();
+
+  const handleIncomePress = (id: string) => {
+    rootNavigation.navigate('AddIncomeScreen', {id});
+  };
 
   return (
     <MainContainer header>
@@ -39,14 +48,15 @@ const IncomingsScreen = () => {
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={{height: 10, width: '100%'}} />}
         renderItem={({item, index}) => (
-          <>
-            {index === 0 || (index > 0 && isDifferentDay(incomes[index - 1].date, item.date)) ? (
-              <Text variant="title" color={palette.gray[600]} mb={10} mt={5}>
-                {dayjs(item.date).format('DD MMMM YYYY')}
-              </Text>
-            ) : null}
-            <IncomeCard id={item.id} description={item.description} account={item.account} amount={item.amount} />
-          </>
+          <IncomeCard
+            id={item.id}
+            description={item.description}
+            account={item.account}
+            amount={item.amount}
+            date={item.date}
+            previousDate={index > 0 ? incomes[index - 1].date : undefined}
+            onPress={handleIncomePress}
+          />
         )}
       />
     </MainContainer>

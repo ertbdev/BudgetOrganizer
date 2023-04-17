@@ -6,7 +6,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/navigation';
 import {Container, RowContainer} from '../../styles/styledComponents/containers';
 import Button from '../../components/common/Button';
-import {FontAwesome5} from '@expo/vector-icons';
+import {FontAwesome5, MaterialIcons} from '@expo/vector-icons';
 import {useTheme} from 'styled-components/native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OptionsModal'>;
@@ -17,11 +17,11 @@ const OptionsModal = ({navigation, route}: Props) => {
   const tabBarHeight = route.params.tabBarHeight || 50;
 
   const handleAddExpensePress = () => {
-    navigation.push('AddExpenseScreen');
+    navigation.push('AddExpenseScreen', {});
   };
 
   const handleAddIncomePress = () => {
-    navigation.push('AddIncomeScreen');
+    navigation.push('AddIncomeScreen', {});
   };
 
   const handleCloseModal = () => {
@@ -46,7 +46,7 @@ const OptionsModal = ({navigation, route}: Props) => {
             </Button>
           </RowContainer>
 
-          <RowContainer pr={20}>
+          <RowContainer pr={20} mb={25}>
             <Button
               mr={20}
               height={35}
@@ -59,7 +59,10 @@ const OptionsModal = ({navigation, route}: Props) => {
               <FontAwesome5 name="shopify" color={palette.primary.main} size={25} />
             </Button>
           </RowContainer>
-          <Container h={tabBarHeight + 60} />
+
+          <Button mr={20} mb={tabBarHeight + 20} mode="rounded" height={60} onPress={handleCloseModal}>
+            <MaterialIcons name="close" color={palette.background.default} size={30} />
+          </Button>
         </Container>
       </Pressable>
     </MainContainer>

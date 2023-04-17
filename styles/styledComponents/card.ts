@@ -14,7 +14,7 @@ type ContainerProps = {
 } & Padding &
   Margin;
 
-export const Card = styled.View<ContainerProps>`
+export const Card = styled.TouchableOpacity<ContainerProps>`
   background-color: ${({theme, bg}) => bg || theme.palette.background.default};
   border-radius: ${({br}) => br || 10}px;
   width: ${({width}) => (width ? (typeof width === 'string' ? width : width + 'px') : '96%')};

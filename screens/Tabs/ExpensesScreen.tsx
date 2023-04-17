@@ -6,15 +6,24 @@ import {useAppSelector} from '../../hooks/redux';
 import ExpenseCard from '../../components/ExpenseCard';
 import {useTheme} from 'styled-components/native';
 import Text from '../../components/common/Text';
-import dayjs from 'dayjs';
-import {isDifferentDay} from '../../functions/isDifferentDay';
 import MonthSelector from '../../components/MonthSelector';
 import {Container} from '../../styles/styledComponents/containers';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {BottomTabsParamList, RootStackParamList} from '../../types/navigation';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-const ExpensesScreen = () => {
+type Props = BottomTabScreenProps<BottomTabsParamList, 'ExpensesScreen'>;
+
+const ExpensesScreen = ({navigation}: Props) => {
   const {palette} = useTheme();
+  const rootNavigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const expenses = useAppSelector(state => state.budgetSlice.monthlyExpenses);
+
+  const handleExpensePress = (id: string) => {
+    rootNavigation.navigate('AddExpenseScreen', {id});
+  };
 
   return (
     <MainContainer header>
@@ -39,14 +48,16 @@ const ExpensesScreen = () => {
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={{height: 10, width: '100%'}} />}
         renderItem={({item, index}) => (
-          <>
-            {index === 0 || (index > 0 && isDifferentDay(expenses[index - 1].date, item.date)) ? (
-              <Text variant="title" color={palette.gray[600]} mb={10} mt={5}>
-                {dayjs(item.date).format('DD MMMM YYYY')}
-              </Text>
-            ) : null}
-            <ExpenseCard id={item.id} description={item.description} account={item.account} amount={item.amount} category={item.category} />
-          </>
+          <ExpenseCard
+            id={item.id}
+            account={item.account}
+            amount={item.amount}
+            category={item.category}
+            date={item.date}
+            previousDate={index > 0 ? expenses[index - 1].date : undefined}
+            description={item.description}
+            onPress={handleExpensePress}
+          />
         )}
       />
     </MainContainer>

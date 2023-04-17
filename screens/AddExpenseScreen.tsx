@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {Keyboard} from 'react-native';
+import {Alert, Keyboard} from 'react-native';
 
 import MainContainer from '../components/common/MainContainer';
-import {Container} from '../styles/styledComponents/containers';
+import {Container, RowContainer} from '../styles/styledComponents/containers';
 import TextInput from '../components/common/TextInput';
 import ScreenHeader from '../components/ScreenHeader';
 import KeyboardAvoidanceContainer from '../components/common/KeyboardAvoidanceContainer';
@@ -11,14 +11,14 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/navigation';
 import {useTheme} from 'styled-components';
 
-import {FontAwesome, FontAwesome5, Entypo} from '@expo/vector-icons';
+import {FontAwesome, FontAwesome5, MaterialCommunityIcons} from '@expo/vector-icons';
 import Button from '../components/common/Button';
 import AccountsModal from '../components/AccountsModal';
 import {useFormik} from 'formik';
 import dayjs from 'dayjs';
 import CategoriesModal from '../components/CategoriesModal';
-import {useAppDispatch} from '../hooks/redux';
-import {addNewExpense} from '../redux/budgetSlice';
+import {useAppDispatch, useAppSelector} from '../hooks/redux';
+import {addNewExpense, editExpense, removeExpense} from '../redux/budgetSlice';
 import {expenseSchema} from '../schemas/expenseSchema';
 import {DateTimePickerEvent, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import {Expense} from '../models/expense';
@@ -26,12 +26,17 @@ import Text from '../components/common/Text';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddExpenseScreen'>;
 
-const AddExpenseScreen = ({navigation}: Props) => {
+const AddExpenseScreen = ({navigation, route}: Props) => {
   const {palette} = useTheme();
+
+  const oldData = route.params.id
+    ? useAppSelector(state => state.budgetSlice.monthlyExpenses.find(expense => expense.id === route.params.id))
+    : undefined;
 
   const [showAccountsModal, setShowAccountsModal] = useState(false);
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -73,10 +78,32 @@ const AddExpenseScreen = ({navigation}: Props) => {
 
   const handleDatePress = () => {
     Keyboard.dismiss();
-    DateTimePickerAndroid.open({value: new Date(), mode: 'date', onChange: handleSetDate});
+    DateTimePickerAndroid.open({value: new Date(values.date), mode: 'date', onChange: handleSetDate});
   };
 
-  const handleAddExpense = async () => {
+  const handleToggleEditMode = () => {
+    setEdit(value => !value);
+  };
+
+  const handleDeletePress = () =>
+    Alert.alert(
+      'Delete Expense',
+      'Are you sure you want to delete this expense?',
+      [
+        {text: 'Delete', onPress: handleDeleteExpense, style: 'destructive'},
+        {text: 'Cancel', style: 'cancel'},
+      ],
+      {cancelable: true},
+    );
+
+  const handleDeleteExpense = async () => {
+    setLoading(true);
+    oldData?.id && (await dispatch(removeExpense(oldData.id)));
+    setLoading(false);
+    handleGoBackPress();
+  };
+
+  const handleSave = async () => {
     setLoading(true);
     const expense: Expense = {
       description: values.description,
@@ -85,7 +112,11 @@ const AddExpenseScreen = ({navigation}: Props) => {
       amount: +values.amount,
       date: values.date,
     };
-    await dispatch(addNewExpense(expense));
+    if (oldData) {
+      await dispatch(editExpense({...expense, id: oldData.id}));
+    } else {
+      await dispatch(addNewExpense(expense));
+    }
     setLoading(false);
     handleGoBackPress();
   };
@@ -93,16 +124,36 @@ const AddExpenseScreen = ({navigation}: Props) => {
   const {setFieldValue, handleChange, handleSubmit, handleBlur, values, errors, touched} = useFormik({
     validationSchema: expenseSchema,
     initialValues: {account: '', amount: '', date: new Date().getTime(), description: '', category: ''},
-    onSubmit: handleAddExpense,
+    onSubmit: handleSave,
   });
+
+  useEffect(() => {
+    if (oldData) {
+      setFieldValue('account', oldData.account);
+      setFieldValue('amount', oldData.amount);
+      setFieldValue('category', oldData.category);
+      setFieldValue('date', oldData.date);
+      setFieldValue('description', oldData.description);
+    }
+  }, [oldData]);
 
   return (
     <MainContainer justifyContent="flex-start">
-      <ScreenHeader title="Add Expense" onBackPress={handleGoBackPress} />
+      <ScreenHeader title={oldData ? (edit ? 'Edit Expense' : 'Expense') : 'Add Expense'} onBackPress={handleGoBackPress} />
       <KeyboardAvoidanceContainer>
         <Container>
-          <Entypo name="add-to-list" size={40} color={palette.gray[800]} />
-          <Text>Add receipt</Text>
+          {Boolean(oldData) ? (
+            <RowContainer variant="full-width" justifyContent="flex-end" pr={40}>
+              <Button mode="text" mr={20} onPress={handleDeletePress}>
+                <FontAwesome5 name="trash" size={24} color={palette.error.light} />
+              </Button>
+              <Button mode="text" onPress={handleToggleEditMode}>
+                <MaterialCommunityIcons name={edit ? 'pencil-off' : 'pencil'} size={30} />
+              </Button>
+            </RowContainer>
+          ) : null}
+          {/* <Entypo name="add-to-list" size={40} color={palette.gray[800]} />
+          <Text>Add receipt</Text> */}
         </Container>
 
         <Container variant="full-width">
@@ -113,6 +164,7 @@ const AddExpenseScreen = ({navigation}: Props) => {
             onBlur={handleBlur('description')}
             error={touched.description && Boolean(errors.description)}
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             left={<FontAwesome name="pencil-square-o" size={25} color={palette.gray[500]} />}
           />
           <TextInput
@@ -123,7 +175,13 @@ const AddExpenseScreen = ({navigation}: Props) => {
             error={touched.amount && Boolean(errors.amount)}
             keyboardType="numeric"
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             left={<FontAwesome5 name="money-bill-wave" size={22} color={palette.gray[500]} />}
+            right={
+              <Text variant="subtitle2" color={palette.gray[500]}>
+                zł
+              </Text>
+            }
           />
           <TextInput
             placeholder="Account"
@@ -131,6 +189,7 @@ const AddExpenseScreen = ({navigation}: Props) => {
             onBlur={handleBlur('account')}
             error={touched.account && Boolean(errors.account)}
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             showSoftInputOnFocus={false}
             onFocus={handleAccountPress}
             left={<FontAwesome name="bank" size={25} color={palette.gray[500]} />}
@@ -142,6 +201,7 @@ const AddExpenseScreen = ({navigation}: Props) => {
             onBlur={handleBlur('category')}
             error={touched.category && Boolean(errors.category)}
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             showSoftInputOnFocus={false}
             capitalize
             onFocus={handleCategoryPress}
@@ -154,13 +214,14 @@ const AddExpenseScreen = ({navigation}: Props) => {
             onBlur={handleBlur('date')}
             error={touched.date && Boolean(errors.date)}
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             showSoftInputOnFocus={false}
             onFocus={handleDatePress}
             left={<FontAwesome name="calendar" size={25} color={palette.gray[500]} />}
           />
         </Container>
 
-        <Button loading={loading} minWidth={'40%'} onPress={handleSubmit}>
+        <Button loading={loading} disabled={Boolean(oldData) && !edit} minWidth={'40%'} onPress={handleSubmit}>
           Save
         </Button>
       </KeyboardAvoidanceContainer>

@@ -70,7 +70,7 @@ const Button = ({
   const _textColor =
     disabled && mode === 'text' ? palette.gray[600] : textColor ? textColor : mode === 'text' ? palette.primary.main : palette.common.white;
   const _buttonColor = mode === 'text' ? 'transparent' : disabled ? palette.gray[600] : buttonColor || palette.primary.main;
-  const _borderRadius = borderRadius || height * 0.3;
+  const _borderRadius = borderRadius !== undefined ? borderRadius : height * 0.3;
 
   const styles = makeStyles(mode, height, _borderRadius, minWidth, _buttonColor, _textColor, _textSize, capitalize);
 

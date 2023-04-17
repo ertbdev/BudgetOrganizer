@@ -7,7 +7,7 @@ import {BottomTabsParamList} from '../types/navigation';
 import AppHeader from '../components/AppHeader';
 import {Ionicons, FontAwesome5} from '@expo/vector-icons';
 import {useTheme} from 'styled-components/native';
-import IncomingsScreen from '../screens/tabs/IncomingsScreen';
+import IncomesScreen from '../screens/tabs/IncomesScreen';
 import ProfileScreen from '../screens/tabs/ProfileScreen';
 
 const Tab = createBottomTabNavigator<BottomTabsParamList>();
@@ -39,8 +39,8 @@ const BottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name="IncomingsScreen"
-        component={IncomingsScreen}
+        name="IncomesScreen"
+        component={IncomesScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => <FontAwesome5 name="piggy-bank" color={color} size={size} />,
           tabBarStyle: {backgroundColor: palette.background.paper},

@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {Keyboard} from 'react-native';
+import {Alert, Keyboard} from 'react-native';
 
 import MainContainer from '../components/common/MainContainer';
-import {Container} from '../styles/styledComponents/containers';
+import {Container, RowContainer} from '../styles/styledComponents/containers';
 import TextInput from '../components/common/TextInput';
 import ScreenHeader from '../components/ScreenHeader';
 import KeyboardAvoidanceContainer from '../components/common/KeyboardAvoidanceContainer';
@@ -11,24 +11,30 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/navigation';
 import {useTheme} from 'styled-components';
 
-import {FontAwesome, FontAwesome5} from '@expo/vector-icons';
+import {FontAwesome, FontAwesome5, MaterialCommunityIcons} from '@expo/vector-icons';
 import Button from '../components/common/Button';
 import AccountsModal from '../components/AccountsModal';
 import {useFormik} from 'formik';
 import dayjs from 'dayjs';
-import {useAppDispatch} from '../hooks/redux';
+import {useAppDispatch, useAppSelector} from '../hooks/redux';
 import {DateTimePickerEvent, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import {incomeSchema} from '../schemas/incomeSchema';
 import {Income} from '../models/income';
-import {addNewIncome} from '../redux/budgetSlice';
+import {addNewIncome, editIncome, removeIncome} from '../redux/budgetSlice';
+import Text from '../components/common/Text';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddIncomeScreen'>;
 
-const AddIncomeScreen = ({navigation}: Props) => {
+const AddIncomeScreen = ({navigation, route}: Props) => {
   const {palette} = useTheme();
+
+  const oldData = route.params.id
+    ? useAppSelector(state => state.budgetSlice.monthlyIncomes.find(income => income.id === route.params.id))
+    : undefined;
 
   const [showAccountsModal, setShowAccountsModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -59,7 +65,29 @@ const AddIncomeScreen = ({navigation}: Props) => {
     DateTimePickerAndroid.open({value: new Date(), mode: 'date', onChange: handleSetDate});
   };
 
-  const handleAddExpense = async () => {
+  const handleToggleEditMode = () => {
+    setEdit(value => !value);
+  };
+
+  const handleDeletePress = () =>
+    Alert.alert(
+      'Delete Expense',
+      'Are you sure you want to delete this expense?',
+      [
+        {text: 'Delete', onPress: handleDeleteIncome, style: 'destructive'},
+        {text: 'Cancel', style: 'cancel'},
+      ],
+      {cancelable: true},
+    );
+
+  const handleDeleteIncome = async () => {
+    setLoading(true);
+    oldData?.id && (await dispatch(removeIncome(oldData.id)));
+    setLoading(false);
+    handleGoBackPress();
+  };
+
+  const handleSave = async () => {
     setLoading(true);
     const income: Income = {
       description: values.description,
@@ -67,7 +95,12 @@ const AddIncomeScreen = ({navigation}: Props) => {
       amount: +values.amount,
       date: values.date,
     };
-    await dispatch(addNewIncome(income));
+
+    if (oldData) {
+      await dispatch(editIncome({...income, id: oldData.id}));
+    } else {
+      await dispatch(addNewIncome(income));
+    }
     setLoading(false);
     handleGoBackPress();
   };
@@ -75,16 +108,35 @@ const AddIncomeScreen = ({navigation}: Props) => {
   const {setFieldValue, handleChange, handleSubmit, handleBlur, values, errors, touched} = useFormik({
     validationSchema: incomeSchema,
     initialValues: {account: '', amount: '', date: new Date().getTime(), description: ''},
-    onSubmit: handleAddExpense,
+    onSubmit: handleSave,
   });
+
+  useEffect(() => {
+    if (oldData) {
+      setFieldValue('account', oldData.account);
+      setFieldValue('amount', oldData.amount);
+      setFieldValue('date', oldData.date);
+      setFieldValue('description', oldData.description);
+    }
+  }, [oldData]);
 
   return (
     <MainContainer justifyContent="flex-start">
       <ScreenHeader title="Add Income" onBackPress={handleGoBackPress} />
       <KeyboardAvoidanceContainer>
         <Container>
-          {/* <Text>add receipt</Text>
-          <FontAwesome5 name="receipt" size={40} color={palette.gray[800]} /> */}
+          {Boolean(oldData) ? (
+            <RowContainer variant="full-width" justifyContent="flex-end" pr={40}>
+              <Button mode="text" mr={20} onPress={handleDeletePress}>
+                <FontAwesome5 name="trash" size={24} color={palette.error.light} />
+              </Button>
+              <Button mode="text" onPress={handleToggleEditMode}>
+                <MaterialCommunityIcons name={edit ? 'pencil-off' : 'pencil'} size={30} />
+              </Button>
+            </RowContainer>
+          ) : null}
+          {/* <Entypo name="add-to-list" size={40} color={palette.gray[800]} />
+          <Text>Add receipt</Text> */}
         </Container>
 
         <Container variant="full-width">
@@ -95,6 +147,7 @@ const AddIncomeScreen = ({navigation}: Props) => {
             onBlur={handleBlur('description')}
             error={touched.description && Boolean(errors.description)}
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             left={<FontAwesome name="pencil-square-o" size={25} color={palette.gray[500]} />}
           />
           <TextInput
@@ -105,7 +158,13 @@ const AddIncomeScreen = ({navigation}: Props) => {
             error={touched.amount && Boolean(errors.amount)}
             keyboardType="numeric"
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             left={<FontAwesome5 name="money-bill-wave" size={22} color={palette.gray[500]} />}
+            right={
+              <Text variant="subtitle2" color={palette.gray[500]}>
+                zł
+              </Text>
+            }
           />
           <TextInput
             placeholder="Account"
@@ -113,6 +172,7 @@ const AddIncomeScreen = ({navigation}: Props) => {
             onBlur={handleBlur('account')}
             error={touched.account && Boolean(errors.account)}
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             showSoftInputOnFocus={false}
             onFocus={handleAccountPress}
             left={<FontAwesome name="bank" size={25} color={palette.gray[500]} />}
@@ -124,13 +184,14 @@ const AddIncomeScreen = ({navigation}: Props) => {
             onBlur={handleBlur('date')}
             error={touched.date && Boolean(errors.date)}
             width={'90%'}
+            editable={!Boolean(oldData) || edit}
             showSoftInputOnFocus={false}
             onFocus={handleDatePress}
             left={<FontAwesome name="calendar" size={25} color={palette.gray[500]} />}
           />
         </Container>
 
-        <Button loading={loading} minWidth={'40%'} onPress={handleSubmit}>
+        <Button loading={loading} disabled={Boolean(oldData) && !edit} minWidth={'40%'} onPress={handleSubmit}>
           Save
         </Button>
       </KeyboardAvoidanceContainer>

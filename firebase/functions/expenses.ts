@@ -23,6 +23,38 @@ export const addExpense = async (data: Expense) => {
   }
 };
 
+export const updateExpense = async (data: Partial<Expense>) => {
+  const uid = auth().currentUser?.uid;
+
+  if (!uid) {
+    throw 'User is not logged in ';
+  }
+
+  try {
+    await firestore().collection('Users').doc(uid).collection('Expenses').doc(data.id).update(data);
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    console.error(firebaseError);
+    throw firebaseError.code;
+  }
+};
+
+export const deleteExpense = async (id: string) => {
+  const uid = auth().currentUser?.uid;
+
+  if (!uid) {
+    throw 'User is not logged in ';
+  }
+
+  try {
+    await firestore().collection('Users').doc(uid).collection('Expenses').doc(id).delete();
+  } catch (err) {
+    const firebaseError = err as {code: string};
+    console.error(firebaseError);
+    throw firebaseError.code;
+  }
+};
+
 export const getExpenses = async () => {
   const uid = auth().currentUser?.uid;
 
