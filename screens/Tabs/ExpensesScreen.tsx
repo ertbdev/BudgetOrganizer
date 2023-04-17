@@ -7,14 +7,26 @@ import ExpenseCard from '../../components/ExpenseCard';
 import {useTheme} from 'styled-components/native';
 import Text from '../../components/common/Text';
 import dayjs from 'dayjs';
-import { isDifferentDay } from '../../functions/isDifferentDay';
+import {isDifferentDay} from '../../functions/isDifferentDay';
+import MonthSelector from '../../components/MonthSelector';
+import {Container} from '../../styles/styledComponents/containers';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 const ExpensesScreen = () => {
   const {palette} = useTheme();
-  const expenses = useAppSelector(state => state.budgetSlice.expenses);
+  const expenses = useAppSelector(state => state.budgetSlice.monthlyExpenses);
 
   return (
     <MainContainer header>
+      <MonthSelector total={expenses.reduce((acc, item) => acc + item.amount, 0)} expenses />
+      {expenses.length < 1 ? (
+        <Container pt={'30%'}>
+          <MaterialCommunityIcons name="sort-variant-remove" size={60} color={palette.gray[400]} />
+          <Text mt={10} color={palette.gray[400]}>
+            No data available.
+          </Text>
+        </Container>
+      ) : null}
       <FlatList
         data={expenses}
         style={{width: '98%'}}

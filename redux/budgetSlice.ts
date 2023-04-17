@@ -4,15 +4,22 @@ import {Expense} from '../models/expense';
 import {addExpense, getExpenses} from '../firebase/functions/expenses';
 import {Income} from '../models/income';
 import {addIncome} from '../firebase/functions/incomes';
+import dayjs from 'dayjs';
 
 type BudgetSliceProps = {
   expenses: Expense[];
+  monthlyExpenses: Expense[];
   incomes: Income[];
+  monthlyIncomes: Income[];
+  selectedMonth: {start: number; end: number};
 };
 
 const initialState: BudgetSliceProps = {
   expenses: [],
+  monthlyExpenses: [],
   incomes: [],
+  monthlyIncomes: [],
+  selectedMonth: {start: dayjs().startOf('month').unix() * 1000, end: dayjs().endOf('month').unix() * 1000},
 };
 
 export const addNewExpense = createAsyncThunk<void, Expense, {state: RootState}>('budgetSlice/addNewExpense', async (expense, thunkAPI) => {
@@ -52,9 +59,28 @@ const budgetSlice = createSlice({
     },
     setExpenses(state, action: PayloadAction<Expense[]>) {
       state.expenses = action.payload;
+      state.monthlyExpenses = action.payload.filter(
+        expense => expense.date > state.selectedMonth.start && expense.date < state.selectedMonth.end,
+      );
     },
     setIncomes(state, action: PayloadAction<Income[]>) {
       state.incomes = action.payload;
+      state.monthlyIncomes = action.payload.filter(
+        income => income.date > state.selectedMonth.start && income.date < state.selectedMonth.end,
+      );
+    },
+    changeSelectedMonth(state, action: PayloadAction<'add' | 'subtract'>) {
+      const newMonth =
+        action.payload === 'add' ? dayjs(state.selectedMonth.start).add(1, 'month') : dayjs(state.selectedMonth.start).subtract(1, 'month');
+
+      const start = newMonth.unix() * 1000;
+      const end = newMonth.endOf('month').unix() * 1000;
+
+      state.selectedMonth.start = start;
+      state.selectedMonth.end = end;
+
+      state.monthlyExpenses = state.expenses.filter(expense => expense.date > start && expense.date < end);
+      state.monthlyIncomes = state.incomes.filter(income => income.date > start && income.date < end);
     },
   },
   extraReducers: builder => {
@@ -72,6 +98,6 @@ const budgetSlice = createSlice({
   },
 });
 
-export const {resetBudgetSlice, setExpenses, setIncomes} = budgetSlice.actions;
+export const {resetBudgetSlice, setExpenses, setIncomes, changeSelectedMonth} = budgetSlice.actions;
 
 export default budgetSlice.reducer;

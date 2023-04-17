@@ -8,10 +8,12 @@ type ContainerProps = {
   w?: string | number;
   h?: string | number;
   bg?: string;
+  flex?: number;
 } & Padding &
   Margin;
 
 export const Container = styled.View<ContainerProps>`
+  ${({flex}) => flex && `flex: ${flex};`}
   ${({bg}) => bg && `background-color: ${bg};`}
 
   ${({variant}) =>
@@ -41,13 +43,15 @@ export const Container = styled.View<ContainerProps>`
 `;
 
 export const RowContainer = styled.View<ContainerProps>`
+  ${({flex}) => flex && `flex: ${flex};`}
   flex-direction: row;
   ${({bg}) => bg && `background-color: ${bg};`}
+
   ${({variant}) =>
     variant === 'full'
       ? 'width:100%; height:100%;'
       : variant === 'full-width'
-      ? 'width:100%;'
+      ? 'width:100%'
       : variant === 'full-height'
       ? 'height:100%;'
       : ''}
@@ -71,6 +75,7 @@ export const RowContainer = styled.View<ContainerProps>`
 
 export const ScreenContainer = styled.View<Pick<ContainerProps, 'alignItems' | 'justifyContent'>>`
   flex: 1;
+  width: 100%;
   justify-content: ${props => props.justifyContent || 'space-around'};
   align-items: ${props => props.alignItems || 'center'};
 `;
