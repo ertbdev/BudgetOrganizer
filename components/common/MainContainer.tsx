@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Keyboard, Platform, StyleProp, ViewStyle, View} from 'react-native';
+import {ScrollView, StyleProp, ViewStyle} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScreenContainer} from '../../styles/styledComponents/containers';
 import {Padding} from '../../types/container';
@@ -10,7 +10,7 @@ import {APP_HEADER_HEIGHT} from '../../assets/constants/appDefaults';
 type Props = {
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
-  variant?: 'default' | 'keyboard-avoidance';
+  variant?: 'default' | 'scrollable' | 'keyboard-avoidance';
   justifyContent?: 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
   alignItems?: 'center' | 'flex-start' | 'flex-end';
   header?: boolean;
@@ -32,6 +32,12 @@ const MainContainer = ({children, style, justifyContent, header, alignItems, var
         <ScreenContainer justifyContent={justifyContent} alignItems={alignItems} style={[padding, style]}>
           {children}
         </ScreenContainer>
+      ) : variant === 'scrollable' ? (
+        <ScrollView contentContainerStyle={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
+          <ScreenContainer justifyContent={justifyContent || 'flex-start'} alignItems={alignItems} style={[padding, style]}>
+            {children}
+          </ScreenContainer>
+        </ScrollView>
       ) : (
         <KeyboardAvoidanceContainer alignItems={alignItems} justifyContent={justifyContent} style={[padding, style]}>
           {children}

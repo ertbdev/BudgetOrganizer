@@ -23,6 +23,22 @@ const Text = ({children, variant, style, color, numberOfLines, m, mt, mb, mr, ml
 
   const _color = color || palette.text.primary;
 
+  if (variant === 'h1') {
+    return (
+      <RNText numberOfLines={numberOfLines} style={[{fontSize: 26, fontWeight: '700', color: _color}, margin, style]}>
+        {children}
+      </RNText>
+    );
+  }
+
+  if (variant === 'h2') {
+    return (
+      <RNText numberOfLines={numberOfLines} style={[{fontSize: 22, fontWeight: '700', color: _color}, margin, style]}>
+        {children}
+      </RNText>
+    );
+  }
+
   if (variant === 'h3') {
     return (
       <RNText numberOfLines={numberOfLines} style={[{fontSize: 18, fontWeight: '700', color: _color}, margin, style]}>

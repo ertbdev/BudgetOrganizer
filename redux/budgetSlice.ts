@@ -6,12 +6,18 @@ import {Income} from '../models/income';
 import {addIncome, deleteIncome, updateIncome} from '../firebase/functions/incomes';
 import dayjs from 'dayjs';
 
+type Balance = {
+  totalIncomes: number;
+  totalExpenses: number;
+};
+
 type BudgetSliceProps = {
   expenses: Expense[];
   monthlyExpenses: Expense[];
   incomes: Income[];
   monthlyIncomes: Income[];
   selectedMonth: {start: number; end: number};
+  balance: {bankAccount: Balance; cash: Balance};
 };
 
 const initialState: BudgetSliceProps = {
@@ -19,6 +25,7 @@ const initialState: BudgetSliceProps = {
   monthlyExpenses: [],
   incomes: [],
   monthlyIncomes: [],
+  balance: {bankAccount: {totalExpenses: 0, totalIncomes: 0}, cash: {totalExpenses: 0, totalIncomes: 0}},
   selectedMonth: {start: dayjs().startOf('month').unix() * 1000, end: dayjs().endOf('month').unix() * 1000},
 };
 
@@ -98,12 +105,27 @@ const budgetSlice = createSlice({
       state.monthlyExpenses = action.payload.filter(
         expense => expense.date > state.selectedMonth.start && expense.date < state.selectedMonth.end,
       );
+
+      state.balance.bankAccount.totalExpenses = action.payload.reduce(
+        (acc, expense) => (expense.account === 'Bank Account' ? acc + expense.amount : acc),
+        0,
+      );
+      state.balance.cash.totalExpenses = action.payload.reduce(
+        (acc, expense) => (expense.account === 'Cash' ? acc + expense.amount : acc),
+        0,
+      );
     },
     setIncomes(state, action: PayloadAction<Income[]>) {
       state.incomes = action.payload;
       state.monthlyIncomes = action.payload.filter(
         income => income.date > state.selectedMonth.start && income.date < state.selectedMonth.end,
       );
+
+      state.balance.bankAccount.totalIncomes = action.payload.reduce(
+        (acc, income) => (income.account === 'Bank Account' ? acc + income.amount : acc),
+        0,
+      );
+      state.balance.cash.totalIncomes = action.payload.reduce((acc, income) => (income.account === 'Cash' ? acc + income.amount : acc), 0);
     },
     changeSelectedMonth(state, action: PayloadAction<'add' | 'subtract'>) {
       const newMonth =
