@@ -14,6 +14,7 @@ import {Container} from '../../styles/styledComponents/containers';
 import {RootStackParamList} from '../../types/navigation';
 import Text from '../../components/common/Text';
 import ScreenHeader from '../../components/ScreenHeader';
+import {getAuthYupErrors} from '../../functions/getYupErrors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ForgotPasswordScreen'>;
 
@@ -55,7 +56,7 @@ const ForgotPasswordScreen = ({navigation}: Props) => {
           setErrors([err as string]);
         }
       } else {
-        // setErrors(getAuthYupErrors((err as {inner: {message: string; path: keyof FormFields}[]}).inner).email);
+        setErrors(getAuthYupErrors((err as {inner: {message: string; path: keyof FormFields}[]}).inner).email);
       }
     }
     setLoading(false);
@@ -123,48 +124,5 @@ const ForgotPasswordScreen = ({navigation}: Props) => {
     </MainContainer>
   );
 };
-
-// const makeStyles = (colors: Colors) =>
-//   StyleSheet.create({
-//     safeArea: {
-//       flex: 1,
-//     },
-//     container: {
-//       flex: 1,
-//       justifyContent: 'space-between',
-//       backgroundColor: colors.background.screen,
-//     },
-//     text: {
-//       fontSize: 15,
-//       fontWeight: '600',
-//       color: colors.text.main,
-//       marginBottom: 10,
-//       marginHorizontal: '6%',
-//       textAlign: 'center',
-//     },
-//     icon: {
-//       marginBottom: 20,
-//     },
-//     topContainer: {
-//       flexDirection: 'row',
-//       width: '100%',
-//       paddingTop: 10,
-//       paddingLeft: 10,
-//     },
-//     middleContainer: {
-//       width: '100%',
-//       alignItems: 'center',
-//     },
-//     bottomContainer: {
-//       width: '100%',
-//       justifyContent: 'center',
-//       paddingBottom: 20,
-//     },
-//     bottomText: {
-//       fontSize: 14,
-//       color: colors.primary.main,
-//       textAlign: 'center',
-//     },
-//   });
 
 export default ForgotPasswordScreen;
