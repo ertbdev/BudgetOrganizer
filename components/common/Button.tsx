@@ -36,6 +36,8 @@ type Props = {
   textColor?: string;
   /** Determines the text size of the button */
   textSize?: number;
+  /**capitalize */
+  capitalize?: boolean;
   onPress?: () => void;
 } & Margin;
 
@@ -43,7 +45,7 @@ const Button = ({
   disabled = false,
   height = 50,
   minWidth,
-  borderRadius = 15,
+  borderRadius,
   buttonColor,
   textColor,
   textSize,
@@ -59,6 +61,7 @@ const Button = ({
   ml,
   my,
   mx,
+  capitalize,
   onPress,
 }: Props) => {
   const {palette} = useTheme();
@@ -67,8 +70,9 @@ const Button = ({
   const _textColor =
     disabled && mode === 'text' ? palette.gray[600] : textColor ? textColor : mode === 'text' ? palette.primary.main : palette.common.white;
   const _buttonColor = mode === 'text' ? 'transparent' : disabled ? palette.gray[600] : buttonColor || palette.primary.main;
+  const _borderRadius = borderRadius !== undefined ? borderRadius : height * 0.3;
 
-  const styles = makeStyles(palette, mode, height, borderRadius, minWidth, _buttonColor, _textColor, _textSize);
+  const styles = makeStyles(mode, height, _borderRadius, minWidth, _buttonColor, _textColor, _textSize, capitalize);
 
   const shadowStyle = {
     shadowColor: shadowColor ? shadowColor : palette.text.primary,
@@ -98,7 +102,6 @@ const Button = ({
 };
 
 const makeStyles = (
-  palette: Palette,
   mode: 'text' | 'contained' | 'rounded',
   height: number,
   borderRadius: number,
@@ -106,6 +109,7 @@ const makeStyles = (
   buttonColor?: string,
   textColor?: string,
   textSize?: number,
+  capitalize?: boolean,
 ) =>
   StyleSheet.create({
     container: {
@@ -123,6 +127,7 @@ const makeStyles = (
       fontSize: textSize,
       fontWeight: '600',
       color: textColor,
+      textTransform: capitalize ? 'capitalize' : 'none',
     },
     activitiIndicator: {
       marginRight: mode === 'rounded' ? 0 : 10,

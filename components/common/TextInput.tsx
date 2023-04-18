@@ -34,8 +34,8 @@ type Props = {
   labelStyle?: StyleProp<TextStyle>;
   /** Value of the text input. */
   value?: string;
-  /** The text to use for showing error. */
-  error?: string;
+  /** it might be the text to use for showing error or a boolean. */
+  error?: string | boolean;
   /** The string that will be rendered before text input has been entered. */
   placeholder?: string;
   /** If true, the text input can be multiple lines. The default value is false. */
@@ -46,6 +46,10 @@ type Props = {
   keyboardType?: KeyboardTypeOptions;
   /** If true, the text input obscures the text entered so that sensitive text like passwords stay secure. The default value is false. */
   secureTextEntry?: boolean;
+  /** */
+  showSoftInputOnFocus?: boolean;
+  /** capitalize */
+  capitalize?: boolean;
   /** Callback that is called when the text input's text changes. Changed text is passed as an argument to the callback handler. */
   onChangeText?: (text: string) => void;
   /** Function to execute on press when touching Left component. */
@@ -82,6 +86,8 @@ const TextInput = forwardRef<RNTextInput | null, Props>(
       ml,
       my,
       mx,
+      showSoftInputOnFocus,
+      capitalize,
       onFocus,
       onChangeText,
       onBlur,
@@ -93,7 +99,7 @@ const TextInput = forwardRef<RNTextInput | null, Props>(
     const {palette} = useTheme();
 
     const _height = height ? height : multiline ? 115 : 50;
-    const styles = makeStyles(palette, _height, width, multiline, Boolean(error));
+    const styles = makeStyles(palette, _height, width, multiline, Boolean(error), capitalize);
 
     const margin = {
       marginTop: mt || my || m,
@@ -135,6 +141,7 @@ const TextInput = forwardRef<RNTextInput | null, Props>(
             keyboardType={keyboardType}
             editable={editable}
             secureTextEntry={secureTextEntry}
+            showSoftInputOnFocus={showSoftInputOnFocus}
           />
           {left ? (
             <Pressable
@@ -155,7 +162,7 @@ const TextInput = forwardRef<RNTextInput | null, Props>(
             </Pressable>
           ) : null}
         </View>
-        {error && Boolean(error) ? (
+        {error && typeof error === 'string' ? (
           <View style={styles.errorContainer}>
             <Text testID={`${testID}-error-text`} style={styles.errorText}>
               {error}
@@ -167,7 +174,7 @@ const TextInput = forwardRef<RNTextInput | null, Props>(
   },
 );
 
-const makeStyles = (palette: Palette, height: number, width: number | string, multiline?: boolean, error?: boolean) =>
+const makeStyles = (palette: Palette, height: number, width: number | string, multiline?: boolean, error?: boolean, capitalize?: boolean) =>
   StyleSheet.create({
     container: {
       width: width,
@@ -189,6 +196,7 @@ const makeStyles = (palette: Palette, height: number, width: number | string, mu
       shadowOpacity: 0.4,
       shadowRadius: 3,
       elevation: 5,
+      textTransform: capitalize ? 'capitalize' : 'none',
     },
     label: {
       fontSize: Math.ceil(height * 0.3),

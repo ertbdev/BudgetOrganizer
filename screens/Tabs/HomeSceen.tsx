@@ -1,17 +1,15 @@
 import React from 'react';
 
-import {Text} from 'react-native';
 import MainContainer from '../../components/common/MainContainer';
-import Button from '../../components/common/Button';
-import {useAuthContext} from '../../providers/AuthProvider';
+import AccountCard from '../../components/AccountCard';
+import {useAppSelector} from '../../hooks/redux';
 
 const HomeScreen = () => {
-  const {signOutUser, user} = useAuthContext();
-
+  const balance = useAppSelector(state => state.budgetSlice.balance);
   return (
-    <MainContainer>
-      <Text>{user?.email}</Text>
-      <Button onPress={signOutUser}>Log out</Button>
+    <MainContainer variant="scrollable" header>
+      <AccountCard account="Bank Account" balance={balance.bankAccount.totalIncomes - balance.bankAccount.totalExpenses} />
+      <AccountCard account="Cash" balance={balance.cash.totalIncomes - balance.cash.totalExpenses} />
     </MainContainer>
   );
 };

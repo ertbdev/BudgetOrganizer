@@ -1,9 +1,9 @@
 import React from 'react';
 import {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import addUser from '../firebase/functions/addUser';
 import {User} from '../models/user';
-// import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {addUser} from '../firebase/functions/user';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 type AuthContext = {
   authenticated?: boolean;
@@ -12,7 +12,7 @@ type AuthContext = {
   signUpUser: (email: string, password: string) => Promise<void>;
   signOutUser: () => Promise<void>;
   sendPasswordResetEmail: (email: string) => Promise<void>;
-  //   singInUserUsingGoogle: () => Promise<void>;
+  singInUserUsingGoogle: () => Promise<void>;
 };
 
 const context = createContext<AuthContext | null>(null);
@@ -31,19 +31,17 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
     }
   }, []);
 
-  //   const singInUserUsingGoogle = async () => {
-  //     try {
-  //       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-  //       const {idToken} = await GoogleSignin.signIn();
-  //       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-  //       await auth().signInWithCredential(googleCredential);
-  //     } catch (err) {
-  //       const firebaseError = err as {code: string};
-  //       console.log(firebaseError);
-  //       // const _error = getAuthError(firebaseError.code);
-  //       // throw _error;
-  //     }
-  //   };
+  const singInUserUsingGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      const {idToken} = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(googleCredential);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
 
   const signUpUser = useCallback(async (email: string, password: string, name?: string) => {
     try {
@@ -61,8 +59,8 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
 
   const signOutUser = async () => {
     try {
-      //   const isSignedInWithGoogle = await GoogleSignin.isSignedIn();
-      //   isSignedInWithGoogle && (await GoogleSignin.signOut());
+      const isSignedInWithGoogle = await GoogleSignin.isSignedIn();
+      isSignedInWithGoogle && (await GoogleSignin.signOut());
       await auth().signOut();
       setUser(undefined);
       setAuthenticated(false);
@@ -85,14 +83,15 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
 
   const getLoggedUser = useCallback(async (loggedUser: FirebaseAuthTypes.User | null) => {
     setAuthenticated(loggedUser !== null);
+    loggedUser && setUser({id: loggedUser.uid, email: loggedUser.email || '', name: '', creationTime: 0});
   }, []);
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(getLoggedUser);
 
-    // GoogleSignin.configure({
-    //   webClientId: '26665976803-9o82f9if6hpog72id8mcdrrf3lvondlk.apps.googleusercontent.com',
-    // });
+    GoogleSignin.configure({
+      webClientId: '611562009813-jqedt7cbj189g11li3dq4iognl9i812q.apps.googleusercontent.com',
+    });
 
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,9 +105,9 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       signUpUser,
       signOutUser,
       sendPasswordResetEmail,
-      //   singInUserUsingGoogle,
+      singInUserUsingGoogle,
     }),
-    [user, authenticated, signInUser, signUpUser, sendPasswordResetEmail],
+    [user, authenticated],
   );
 
   return <context.Provider value={contextValue}>{children}</context.Provider>;

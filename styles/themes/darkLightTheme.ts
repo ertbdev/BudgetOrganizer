@@ -9,17 +9,19 @@ export const darkLightTheme = (dark?: boolean) => {
       },
       primary: {
         main: dark ? '#719FEF' : '#0065FF',
+        light: '#719FEF',
       },
       background: {
         default: dark ? '#111112' : '#FFF',
         paper: dark ? '#2A2C38' : '#FFF',
       },
       text: {
-        primary: dark ? '#fff' : '#000',
+        primary: dark ? '#fff' : '#212121',
         disabled: dark ? '#fff' : '#000',
         secondary: dark ? '#fff' : '#000',
       },
-      error: {main: '#FF0000'},
+      error: {main: '#FF0000', light: '#EF5350'},
+      success: {main: '#2E7D32', light: '#4CAF50'},
       gray: {
         50: '#FAFAFA',
         100: '#F5F5F5',

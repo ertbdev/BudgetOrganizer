@@ -1,14 +1,14 @@
 import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/Tabs/HomeSceen';
-import ExpensesScreen from '../screens/Tabs/ExpensesScreen';
+import HomeScreen from '../screens/tabs/HomeSceen';
+import ExpensesScreen from '../screens/tabs/ExpensesScreen';
 import {BottomTabsParamList} from '../types/navigation';
 import AppHeader from '../components/AppHeader';
-import {Ionicons, Feather} from '@expo/vector-icons';
+import {Ionicons, FontAwesome5} from '@expo/vector-icons';
 import {useTheme} from 'styled-components/native';
-import IncomingsScreen from '../screens/Tabs/IncomingsScreen';
-import ProfileScreen from '../screens/Tabs/ProfileScreen';
+import IncomesScreen from '../screens/tabs/IncomesScreen';
+import ProfileScreen from '../screens/tabs/ProfileScreen';
 
 const Tab = createBottomTabNavigator<BottomTabsParamList>();
 
@@ -34,19 +34,15 @@ const BottomTabs = () => {
         name="ExpensesScreen"
         component={ExpensesScreen}
         options={{
-          tabBarIcon: ({focused, color, size}) => (
-            <Feather name="log-out" color={color} size={size} style={{transform: [{rotate: '-90deg'}]}} />
-          ),
+          tabBarIcon: ({focused, color, size}) => <FontAwesome5 name="shopify" color={color} size={size} />,
           tabBarStyle: {backgroundColor: palette.background.paper},
         }}
       />
       <Tab.Screen
-        name="IncomingsScreen"
-        component={IncomingsScreen}
+        name="IncomesScreen"
+        component={IncomesScreen}
         options={{
-          tabBarIcon: ({focused, color, size}) => (
-            <Feather name="log-in" color={color} size={size} style={{transform: [{rotate: '90deg'}]}} />
-          ),
+          tabBarIcon: ({focused, color, size}) => <FontAwesome5 name="piggy-bank" color={color} size={size} />,
           tabBarStyle: {backgroundColor: palette.background.paper},
         }}
       />

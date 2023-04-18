@@ -1,5 +1,6 @@
 type PaletteColor = {
   main: string;
+  light: string;
 };
 
 type BackgroundColor = {
@@ -37,5 +38,6 @@ export type Palette = {
   background: BackgroundColor;
   text: TextColor;
   error: PaletteColor;
+  success: PaletteColor;
   gray: Color;
 };
