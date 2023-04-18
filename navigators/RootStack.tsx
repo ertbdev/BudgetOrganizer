@@ -23,6 +23,7 @@ import OptionsModal from '../screens/modals/OptionsModal';
 import AddIncomeScreen from '../screens/AddIncomeScreen';
 import {incomesSubscriber} from '../firebase/functions/incomes';
 import {Income} from '../models/income';
+import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -73,6 +74,7 @@ const RootStack = () => {
           <Stack.Group>
             <Stack.Screen name="SignInScreen" component={SignInScreen} />
             <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+            <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
           </Stack.Group>
         ) : (
           <Stack.Group>

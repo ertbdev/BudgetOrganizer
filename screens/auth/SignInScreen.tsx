@@ -14,16 +14,18 @@ import {RootStackParamList} from '../../types/navigation';
 import {useFormik} from 'formik';
 import {signInSchema} from '../../schemas/signInSchema';
 import {useAuthContext} from '../../providers/AuthProvider';
+import {ActivityIndicator} from 'react-native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignInScreen'>;
 
 const SignInScreen = ({navigation}: Props) => {
   const {palette} = useTheme();
-  const {signInUser} = useAuthContext();
+  const {signInUser, singInUserUsingGoogle} = useAuthContext();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [backendError, setBackendError] = useState<string>();
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const toggleShowPassword = () => {
     setShowPassword(value => !value);
@@ -34,7 +36,7 @@ const SignInScreen = ({navigation}: Props) => {
   };
 
   const handleForgotPasswordPress = () => {
-    //todo
+    navigation.navigate('ForgotPasswordScreen');
   };
 
   const handleSignIn = async () => {
@@ -53,12 +55,16 @@ const SignInScreen = ({navigation}: Props) => {
         setLoading(false);
       }, 500);
     }
-
-    //todo
   };
 
-  const handleGoogleSignIn = () => {
-    //todo
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      await singInUserUsingGoogle();
+    } catch (err) {
+      setBackendError(err as string);
+    }
+    setGoogleLoading(false);
   };
 
   const handleChangeEmail = (value: string) => {
@@ -83,7 +89,7 @@ const SignInScreen = ({navigation}: Props) => {
         <Icon name="lock" size={70} color={palette.primary.main} />
       </Container>
 
-      <Container variant='full-width'>
+      <Container variant="full-width">
         <TextInput
           label={`${i18n.t('email_address')}:`}
           placeholder={i18n.t('enter_email_address')}
@@ -137,6 +143,12 @@ const SignInScreen = ({navigation}: Props) => {
           {i18n.t('sign_up')}
         </Button>
       </RowContainer>
+
+      {googleLoading ? (
+        <Container variant="full" style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+          <ActivityIndicator size={100} color={palette.primary.main} />
+        </Container>
+      ) : null}
     </MainContainer>
   );
 };
