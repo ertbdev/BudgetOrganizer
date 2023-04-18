@@ -5,6 +5,7 @@ import Text from './common/Text';
 import Button from './common/Button';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useTheme} from 'styled-components/native';
+import {getNumberWithCommas} from '../functions/getNumberWithCommas';
 
 type Props = {
   account?: string;
@@ -34,7 +35,11 @@ const AccountCard = ({account, balance}: Props) => {
 
       <Container variant="full-width" alignItems="flex-start" justifyContent="space-between" h={60} mt={20}>
         <Text color={palette.gray[600]}>Available funds</Text>
-        {showBalance ? <Text variant="h1" >zł {balance || 0}</Text> : <Text color={palette.gray[400]}>Available funds hidden</Text>}
+        {showBalance ? (
+          <Text variant="h1">zł {getNumberWithCommas(balance || 0)}</Text>
+        ) : (
+          <Text color={palette.gray[400]}>Available funds hidden</Text>
+        )}
       </Container>
     </Card>
   );
