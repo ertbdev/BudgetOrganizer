@@ -3,6 +3,7 @@ import React from 'react';
 import MainContainer from '../../components/common/MainContainer';
 import AccountCard from '../../components/AccountCard';
 import {useAppSelector} from '../../hooks/redux';
+import PieChart from '../../components/common/PieChart';
 
 const HomeScreen = () => {
   const balance = useAppSelector(state => state.budgetSlice.balance);

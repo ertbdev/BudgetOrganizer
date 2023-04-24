@@ -5,6 +5,7 @@ import {addExpense, deleteExpense, getExpenses, updateExpense} from '../firebase
 import {Income} from '../models/income';
 import {addIncome, deleteIncome, updateIncome} from '../firebase/functions/incomes';
 import dayjs from 'dayjs';
+import {getCategories} from '../functions/getCategories';
 
 type Balance = {
   totalIncomes: number;
@@ -14,6 +15,7 @@ type Balance = {
 type BudgetSliceProps = {
   expenses: Expense[];
   monthlyExpenses: Expense[];
+  monthlyExpensesByCategory: Pick<Expense, 'category' | 'amount'>[];
   incomes: Income[];
   monthlyIncomes: Income[];
   selectedMonth: {start: number; end: number};
@@ -23,6 +25,7 @@ type BudgetSliceProps = {
 const initialState: BudgetSliceProps = {
   expenses: [],
   monthlyExpenses: [],
+  monthlyExpensesByCategory: [],
   incomes: [],
   monthlyIncomes: [],
   balance: {bankAccount: {totalExpenses: 0, totalIncomes: 0}, cash: {totalExpenses: 0, totalIncomes: 0}},
@@ -102,14 +105,19 @@ const budgetSlice = createSlice({
     },
     setExpenses(state, action: PayloadAction<Expense[]>) {
       state.expenses = action.payload;
-      state.monthlyExpenses = action.payload.filter(
+
+      const monthlyExpenses = action.payload.filter(
         expense => expense.date > state.selectedMonth.start && expense.date < state.selectedMonth.end,
       );
+
+      state.monthlyExpenses = monthlyExpenses;
+      state.monthlyExpensesByCategory = getCategories(monthlyExpenses);
 
       state.balance.bankAccount.totalExpenses = action.payload.reduce(
         (acc, expense) => (expense.account === 'Bank Account' ? acc + expense.amount : acc),
         0,
       );
+      
       state.balance.cash.totalExpenses = action.payload.reduce(
         (acc, expense) => (expense.account === 'Cash' ? acc + expense.amount : acc),
         0,
