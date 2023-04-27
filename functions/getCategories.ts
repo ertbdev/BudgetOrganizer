@@ -11,8 +11,10 @@ export const getCategories = (expenses: Expense[]) => {
     }
     totalAmount += item.amount;
   });
-  return Object.keys(categories).map(item => ({
-    category: item,
-    amount: categories[item],
-  }));
+  return Object.keys(categories)
+    .map(item => ({
+      category: item,
+      amount: categories[item],
+    }))
+    .sort((a, b) => b.amount - a.amount);
 };

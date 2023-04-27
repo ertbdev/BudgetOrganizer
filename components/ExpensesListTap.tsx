@@ -4,6 +4,7 @@ import {FlatList} from 'react-native';
 import {Expense} from '../models/expense';
 import ExpenseCard from './ExpenseCard';
 import {FlatListSeparator} from '../styles/styledComponents/flatListSeparator';
+import { Container } from '../styles/styledComponents/containers';
 
 type Props = {
   expenses?: Expense[];
@@ -12,7 +13,7 @@ type Props = {
 
 const ExpensesListTap = ({expenses, onExpensePress}: Props) => {
   if (!expenses || expenses.length < 1) {
-    return null;
+    return <Container flex={1}/>;
   }
 
   return (

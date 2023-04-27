@@ -1,9 +1,7 @@
-import React from 'react';
-import {FlatList, View} from 'react-native';
+import React, {useState} from 'react';
 
 import MainContainer from '../../components/common/MainContainer';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
-import ExpenseCard from '../../components/ExpenseCard';
 import {useTheme} from 'styled-components/native';
 import Text from '../../components/common/Text';
 import InnerTabHeader from '../../components/InnerTabHeader';
@@ -14,8 +12,8 @@ import {BottomTabsParamList, RootStackParamList} from '../../types/navigation';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {changeSelectedMonth} from '../../redux/budgetSlice';
-import ExpensesListTap from '../../components/ExpensesListTap';
 import ExpensesStatsTap from '../../components/ExpensesStatsTap';
+import ExpensesListTap from '../../components/ExpensesListTap';
 
 type Props = BottomTabScreenProps<BottomTabsParamList, 'ExpensesScreen'>;
 
@@ -25,6 +23,10 @@ const ExpensesScreen = ({navigation}: Props) => {
 
   const expenses = useAppSelector(state => state.budgetSlice.monthlyExpenses);
   const selectedMonth = useAppSelector(state => state.budgetSlice.selectedMonth);
+  const monthlyExpensesByCategory = useAppSelector(state => state.budgetSlice.monthlyExpensesByCategory);
+  const totalMonthlyExpenses = useAppSelector(state => state.budgetSlice.totalMonthlyExpenses);
+
+  const [showChartTap, setShowChartTap] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -40,6 +42,10 @@ const ExpensesScreen = ({navigation}: Props) => {
     rootNavigation.navigate('AddExpenseScreen', {id});
   };
 
+  const toggleTabs = () => {
+    setShowChartTap(value => !value);
+  };
+
   return (
     <MainContainer header>
       <InnerTabHeader
@@ -48,6 +54,8 @@ const ExpensesScreen = ({navigation}: Props) => {
         expenses
         onNextMonthPress={handleNextMonthPress}
         onPreviousMonthPress={handlePreviousMonthPress}
+        chartTap={showChartTap}
+        onChangeTap={toggleTabs}
       />
       {expenses.length < 1 ? (
         <Container pt={'30%'}>
@@ -57,8 +65,11 @@ const ExpensesScreen = ({navigation}: Props) => {
           </Text>
         </Container>
       ) : null}
-      {/* <ExpensesListTap expenses={expenses} onExpensePress={handleExpensePress} /> */}
-      <ExpensesStatsTap expenses={expenses} />
+      {showChartTap ? (
+        <ExpensesStatsTap categories={monthlyExpensesByCategory} total={totalMonthlyExpenses} />
+      ) : (
+        <ExpensesListTap expenses={expenses} onExpensePress={handleExpensePress} />
+      )}
     </MainContainer>
   );
 };

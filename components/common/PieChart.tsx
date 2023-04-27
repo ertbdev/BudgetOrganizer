@@ -89,7 +89,6 @@ const PieChart = ({data, colors, size = 200, bg = 'transparent'}: Props) => {
   }, [data]);
 
   useEffect(() => {
-    console.log('changed');
     if (chartData && chartData.length > 0) {
       if (progress.value > 0) {
         progress.value = withTiming(0, {duration: 500}, isFinished => {
@@ -98,7 +97,7 @@ const PieChart = ({data, colors, size = 200, bg = 'transparent'}: Props) => {
           }
         });
       } else {
-        progress.value = withTiming(1);
+        progress.value = withTiming(1, {duration: 1500});
       }
     }
   }, [chartData]);
