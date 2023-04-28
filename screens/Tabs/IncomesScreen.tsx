@@ -6,7 +6,7 @@ import {useAppSelector} from '../../hooks/redux';
 import Text from '../../components/common/Text';
 import {useTheme} from 'styled-components/native';
 import IncomeCard from '../../components/IncomeCard';
-import MonthSelector from '../../components/MonthSelector';
+import MonthSelector from '../../components/InnerTabHeader';
 import {Container} from '../../styles/styledComponents/containers';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';

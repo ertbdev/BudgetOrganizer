@@ -90,7 +90,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
     const unsubscribe = auth().onAuthStateChanged(getLoggedUser);
 
     GoogleSignin.configure({
-      webClientId: '611562009813-jqedt7cbj189g11li3dq4iognl9i812q.apps.googleusercontent.com',
+      webClientId: '26665976803-9o82f9if6hpog72id8mcdrrf3lvondlk.apps.googleusercontent.com',
     });
 
     return unsubscribe;
