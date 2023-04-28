@@ -58,11 +58,11 @@ Mobile application for budget and expense management (Android). This project was
 
 ### Authentication UI
 
-![auth](https://firebasestorage.googleapis.com/v0/b/portfolio-4de53.appspot.com/o/readme%2FBO_auth_UI.png?alt=media&token=43d8ab9f-ca8d-4ca4-b7be-db9a27063002)
+![auth](https://firebasestorage.googleapis.com/v0/b/portfolio-4de53.appspot.com/o/readme%2FBO_auth_UI.png?alt=media&token=163040cf-8469-40d7-9b66-579e98bbe82a)
 
 ### Application UI
 
-![UI](https://firebasestorage.googleapis.com/v0/b/portfolio-4de53.appspot.com/o/readme%2FBO-UI.png?alt=media&token=2d1c38be-0de7-49a2-889a-bdaf8d4302fe)  
+![UI](https://firebasestorage.googleapis.com/v0/b/portfolio-4de53.appspot.com/o/readme%2FBO_app_UI.png?alt=media&token=f59259b6-501f-457d-a5c1-3b53fd5ce62e)  
 
 [Add expense gif](https://firebasestorage.googleapis.com/v0/b/portfolio-4de53.appspot.com/o/readme%2Fadd_expense.gif?alt=media&token=54a28ca5-9d10-4f36-a442-123d486acee1)
 
@@ -90,16 +90,19 @@ keytool -list -v -keystore ./App/debug.keystore -alias androiddebugkey -storepas
 
 - For aditional information please visit [React Native Firebase](https://rnfirebase.io/)
 
-### RUN PROJECT
+### Build PROJECT
 ```
-npx react-native start
+npx expo run:android
+```
+
+### Run PROJECT
+```
+npx expo start --dev-client
 ```
 
 ### TO-DO
 
 :black_square_button: Add Profile Screen  
 :black_square_button: Add Configuration Screen  
-:black_square_button: Add Stats Screen  
-:black_square_button: Add Animations  
 :black_square_button: Configure firestore rules  
 :black_square_button: Add testing  
