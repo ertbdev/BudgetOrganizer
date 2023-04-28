@@ -25,7 +25,7 @@ const AccountCard = ({account, balance}: Props) => {
   }
 
   return (
-    <Card minHeight={150} px={20} py={15} my={10} activeOpacity={1}>
+    <Card minHeight={150} px={20} py={15} mb={20} activeOpacity={1}>
       <RowContainer variant="full-width" justifyContent="space-between">
         <Text variant="title">{account}</Text>
         <Button mode="text" onPress={handleToogleShowBalance}>

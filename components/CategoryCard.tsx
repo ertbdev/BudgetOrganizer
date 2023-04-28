@@ -24,7 +24,7 @@ const CategoryCard = ({amount, category, color, total, onPress}: Props) => {
       <RowContainer variant="full-width" justifyContent="space-between" py={10} px={20}>
         <RowContainer>
           <Container w={70} h={25} mr={5} bg={color} style={{borderRadius:5}}>
-            <Text>{getPercentageNumber(amount / total)}%</Text>
+            <Text color={palette.gray[800]}>{getPercentageNumber(amount / total)}%</Text>
           </Container>
 
           {categories[category]?.materialCommunityIcon ? (
@@ -33,7 +33,7 @@ const CategoryCard = ({amount, category, color, total, onPress}: Props) => {
             </Container>
           ) : null}
 
-          <Text variant="body1" numberOfLines={2}>
+          <Text variant="body1" numberOfLines={2} style={{textTransform:'capitalize'}}>
             {category}
           </Text>
         </RowContainer>

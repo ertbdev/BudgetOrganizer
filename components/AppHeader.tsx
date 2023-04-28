@@ -42,7 +42,7 @@ const AppHeader = ({navigation, layout}: BottomTabHeaderProps) => {
       </RowContainer>
 
       {showAddButton ? (
-        <View style={{position: 'absolute', top: layout.height - (tabBarHeight + 80), right: 20}}>
+        <View style={{position: 'absolute', top: layout.height - (tabBarHeight + 50), right: 20}}>
           <Button mode="rounded" height={60} onPress={handleOpenOptions}>
             <MaterialIcons name="add" color={palette.background.default} size={35} />
           </Button>
