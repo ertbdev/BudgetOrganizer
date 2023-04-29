@@ -18,7 +18,7 @@ export const addExpense = async (data: Expense) => {
     return {...data, id: result.id, ownerId: uid} as Expense;
   } catch (err) {
     const firebaseError = err as {code: string};
-    console.error(firebaseError);
+    console.error('expenses/addExpense:', firebaseError);
     throw firebaseError.code;
   }
 };
@@ -34,7 +34,7 @@ export const updateExpense = async (data: Partial<Expense>) => {
     await firestore().collection('Users').doc(uid).collection('Expenses').doc(data.id).update(data);
   } catch (err) {
     const firebaseError = err as {code: string};
-    console.error(firebaseError);
+    console.error('expenses/UpdateExpense:', firebaseError);
     throw firebaseError.code;
   }
 };
@@ -50,7 +50,7 @@ export const deleteExpense = async (id: string) => {
     await firestore().collection('Users').doc(uid).collection('Expenses').doc(id).delete();
   } catch (err) {
     const firebaseError = err as {code: string};
-    console.error(firebaseError);
+    console.error('expenses/deleteExpense:', firebaseError);
     throw firebaseError.code;
   }
 };
@@ -69,7 +69,7 @@ export const getExpenses = async () => {
     return expenses;
   } catch (err) {
     const firebaseError = err as {code: string};
-    console.error(firebaseError);
+    console.error('expenses/getExpense:', firebaseError);
     throw firebaseError.code;
   }
 };
@@ -83,7 +83,7 @@ export const expensesSubscriber = (
     .doc(uid)
     .collection('Expenses')
     .orderBy('date', 'desc')
-    .onSnapshot(callback, err => console.error(err));
+    .onSnapshot(callback, err => console.error('expenses/ExpensesListerner:', err));
 
   return subscriber;
 };

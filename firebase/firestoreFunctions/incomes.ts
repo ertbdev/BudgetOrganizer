@@ -18,7 +18,7 @@ export const addIncome = async (data: Income) => {
     return {...data, id: result.id, ownerId: uid} as Income;
   } catch (err) {
     const firebaseError = err as {code: string};
-    console.error(firebaseError);
+    console.error('incomes/addIncome:', firebaseError);
     throw firebaseError.code;
   }
 };
@@ -34,7 +34,7 @@ export const updateIncome = async (data: Partial<Income>) => {
     await firestore().collection('Users').doc(uid).collection('Incomes').doc(data.id).update(data);
   } catch (err) {
     const firebaseError = err as {code: string};
-    console.error(firebaseError);
+    console.error('incomes/updateIncome:', firebaseError);
     throw firebaseError.code;
   }
 };
@@ -50,7 +50,7 @@ export const deleteIncome = async (id: string) => {
     await firestore().collection('Users').doc(uid).collection('Incomes').doc(id).delete();
   } catch (err) {
     const firebaseError = err as {code: string};
-    console.error(firebaseError);
+    console.error('incomes/deleteIncome:', firebaseError);
     throw firebaseError.code;
   }
 };
@@ -69,7 +69,7 @@ export const getIncomes = async () => {
     return incomes;
   } catch (err) {
     const firebaseError = err as {code: string};
-    console.error(firebaseError);
+    console.error('incomes/getIncomes:', firebaseError);
     throw firebaseError.code;
   }
 };
@@ -83,7 +83,7 @@ export const incomesSubscriber = (
     .doc(uid)
     .collection('Incomes')
     .orderBy('date', 'desc')
-    .onSnapshot(callback, err => console.error(err));
+    .onSnapshot(callback, err => console.error('incomes/incomesListener:', err));
 
   return subscriber;
 };

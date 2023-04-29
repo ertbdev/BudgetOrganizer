@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // USER STORAGE RULES 
+    match /Users/{userId} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.id;
+      allow read, update, delete : if request.auth != null && request.auth.uid == userId;
+    }
+    // EXPENSES STORAGE RULES 
+    match /Users/{userId}/Expenses/{expenseId} {
+      allow create: if request.auth.uid == request.resource.data.ownerId;
+      allow read, update, delete: if request.auth.uid == resource.data.ownerId;
+    }
+    // INCOMES STORAGE RULES 
+    match /Users/{userId}/Incomes/{expenseId} {
+      allow create: if request.auth.uid == request.resource.data.ownerId;
+      allow read, update, delete: if request.auth.uid == resource.data.ownerId;
+    }
+    // Allow list subcolletions 
+    match /Users/{userId}/{document=**} {
+      allow list: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+
+// Deploy rules file =>> firebase deploy --only firestore:rules
