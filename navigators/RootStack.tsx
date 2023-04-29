@@ -18,10 +18,10 @@ import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {Expense} from '../models/expense';
 import {useAppDispatch} from '../hooks/redux';
 import {setExpenses, setIncomes} from '../redux/budgetSlice';
-import {expensesSubscriber} from '../firebase/functions/expenses';
+import {expensesSubscriber} from '../firebase/firestoreFunctions/expenses';
 import OptionsModal from '../screens/modals/OptionsModal';
 import AddIncomeScreen from '../screens/AddIncomeScreen';
-import {incomesSubscriber} from '../firebase/functions/incomes';
+import {incomesSubscriber} from '../firebase/firestoreFunctions/incomes';
 import {Income} from '../models/income';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 

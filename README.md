@@ -73,9 +73,11 @@ Mobile application for budget and expense management (Android). This project was
 - Clone the git project 
 - Install the required modules: - npm install
 - Create the [firebase project ](https://console.firebase.google.com/?consoleUI=FIREBASE)
-- Configure the Sign-in providers email/password and google (firebase)
-- Add Android App and configure the SHA certificate fingerprints (firebase)
-- Download the google-services.json file from the App configuration and place it inside of your project root (firebase)
+- Configure the Sign-in providers email/password and google 
+- Add Android App and configure the SHA certificate fingerprints 
+- Create firestore database
+- Deploy firestore security rules
+- Download the google-services.json file from the App configuration and place it inside of your project root
 #### Notes: 
 
 - For obtaining the SHA certificate fingerprints you can use the following commands: 
@@ -89,6 +91,13 @@ keytool -list -v -keystore ./App/debug.keystore -alias androiddebugkey -storepas
 ```
 
 - For aditional information please visit [React Native Firebase](https://rnfirebase.io/)
+
+- For Deploying firestore security rules you can use the following commands:
+
+```
+cd firebase
+firebase deploy --only firestore:rules
+```
 
 ### Build PROJECT
 ```
@@ -104,5 +113,4 @@ npx expo start --dev-client
 
 :black_square_button: Add Profile Screen  
 :black_square_button: Add Configuration Screen  
-:black_square_button: Configure firestore rules  
 :black_square_button: Add testing  

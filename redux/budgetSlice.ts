@@ -1,9 +1,9 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from './store';
 import {Expense} from '../models/expense';
-import {addExpense, deleteExpense, getExpenses, updateExpense} from '../firebase/functions/expenses';
+import {addExpense, deleteExpense, getExpenses, updateExpense} from '../firebase/firestoreFunctions/expenses';
 import {Income} from '../models/income';
-import {addIncome, deleteIncome, updateIncome} from '../firebase/functions/incomes';
+import {addIncome, deleteIncome, updateIncome} from '../firebase/firestoreFunctions/incomes';
 import dayjs from 'dayjs';
 import {getCategories} from '../functions/getCategories';
 

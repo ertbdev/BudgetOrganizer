@@ -2,7 +2,7 @@ import React from 'react';
 import {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {User} from '../models/user';
-import {addUser} from '../firebase/functions/user';
+import {addUser} from '../firebase/firestoreFunctions/user';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 type AuthContext = {
@@ -26,7 +26,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       await auth().signInWithEmailAndPassword(email, password);
     } catch (err) {
       const firebaseError = err as {code: string};
-      console.error(firebaseError);
+      console.error('AuthProvider/signInUser:', firebaseError);
       throw firebaseError.code;
     }
   }, []);
@@ -38,7 +38,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       await auth().signInWithCredential(googleCredential);
     } catch (err) {
-      console.error(err);
+      console.error('AuthProvider/signInUserUsingGoogle:', err);
       throw err;
     }
   };
@@ -52,7 +52,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       await addUser({id: uid, name: _name, email: email, creationTime: creationTime});
     } catch (err) {
       const firebaseError = err as {code: string};
-      console.error(firebaseError);
+      console.error('AuthProvider/signUpUser:', firebaseError);
       throw firebaseError.code;
     }
   }, []);
@@ -66,7 +66,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       setAuthenticated(false);
     } catch (err) {
       const firebaseError = err as {code: string};
-      console.error(firebaseError);
+      console.error('AuthProvider/signOutUser:', firebaseError);
       throw firebaseError.code;
     }
   };
@@ -76,7 +76,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       await auth().sendPasswordResetEmail(email);
     } catch (err) {
       const firebaseError = err as {code: string};
-      console.error(firebaseError);
+      console.error('AuthProvider/sendPasswordResetEmail:', firebaseError);
       throw firebaseError.code;
     }
   }, []);
