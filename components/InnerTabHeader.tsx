@@ -36,7 +36,7 @@ const InnerTabHeader = ({month, chartTap, total, expenses, onNextMonthPress, onP
           <MaterialIcons name="chevron-left" size={36} color={palette.gray[500]} />
         </Button>
         <Text variant="body1">{dayjs(month).format('MMM YYYY')}</Text>
-        <Button mode="text" onPress={onNextMonthPress}>
+        <Button mode="text" onPress={onNextMonthPress} disabled={dayjs(month).isAfter(dayjs(new Date()))}>
           <MaterialIcons name="chevron-right" size={36} color={palette.gray[500]} />
         </Button>
       </RowContainer>

@@ -2,7 +2,7 @@ import React from 'react';
 import {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {User} from '../models/user';
-import {addUser} from '../firebase/firestoreFunctions/user';
+import {addUser, getUserData} from '../firebase/firestoreFunctions/user';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 type AuthContext = {
@@ -36,7 +36,16 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCredential);
+      const result = await auth().signInWithCredential(googleCredential);
+      const user = await getUserData(result.user.uid);
+      const googleUser = await GoogleSignin.getCurrentUser();
+      if (!user.creationTime) {
+        const uid = result.user.uid;
+        const creationTime = result.user.metadata.creationTime
+          ? new Date(result.user.metadata.creationTime).getTime()
+          : new Date().getTime();
+        await addUser({id: uid, name: googleUser?.user.name || '', email: googleUser?.user.email || '', creationTime: creationTime});
+      }
     } catch (err) {
       console.error('AuthProvider/signInUserUsingGoogle:', err);
       throw err;

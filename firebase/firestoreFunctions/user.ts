@@ -8,3 +8,12 @@ export const addUser = async (userData: User) => {
     throw err;
   }
 };
+
+export const getUserData = async (id:string) => {
+  try {
+    const user = (await firestore().collection('Users').doc(id).get()).data();
+    return user as Partial<User>
+  } catch (err) {
+    throw err;
+  }
+};
