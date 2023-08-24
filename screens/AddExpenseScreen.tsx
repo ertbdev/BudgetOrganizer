@@ -19,10 +19,10 @@ import dayjs from 'dayjs';
 import CategoriesModal from '../components/CategoriesModal';
 import {useAppDispatch, useAppSelector} from '../hooks/redux';
 import {addNewExpense, editExpense, removeExpense} from '../redux/budgetSlice';
-import {expenseSchema} from '../schemas/expenseSchema';
 import {DateTimePickerEvent, DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import {Expense} from '../models/expense';
 import Text from '../components/common/Text';
+import { expenseSchema } from '../schemas/expenseSchema';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddExpenseScreen'>;
 

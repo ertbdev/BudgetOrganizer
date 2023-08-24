@@ -78,6 +78,13 @@ Mobile application for budget and expense management (Android). This project was
 - Create firestore database
 - Deploy firestore security rules
 - Download the google-services.json file from the App configuration and place it inside of your project root
+- Modifiy BudgetOrganizer\providers\AuthProvider.tsx file:
+```
+GoogleSignin.configure({
+      webClientId: put here the client_type: 3 from google-services.json,
+    });
+```
+
 #### Notes: 
 
 - For obtaining the SHA certificate fingerprints you can use the following commands: 
