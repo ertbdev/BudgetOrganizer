@@ -1,6 +1,7 @@
 import firestore, {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {Expense} from '../../models/expense';
 import auth from '@react-native-firebase/auth';
+import dayjs from 'dayjs';
 
 export const addExpense = async (data: Expense) => {
   const uid = auth().currentUser?.uid;
@@ -10,11 +11,14 @@ export const addExpense = async (data: Expense) => {
   }
 
   try {
+    const month = dayjs(data.date).format('MM-YYYY');
     const result = await firestore()
       .collection('Users')
       .doc(uid)
+      .collection('Transactions')
+      .doc(month)
       .collection('Expenses')
-      .add({...data, ownerId: uid});
+      .add({...data});
     return {...data, id: result.id, ownerId: uid} as Expense;
   } catch (err) {
     const firebaseError = err as {code: string};
@@ -55,7 +59,7 @@ export const deleteExpense = async (id: string) => {
   }
 };
 
-export const getExpenses = async () => {
+export const getExpenses = async (month: string) => {
   const uid = auth().currentUser?.uid;
 
   if (!uid) {
@@ -63,7 +67,14 @@ export const getExpenses = async () => {
   }
 
   try {
-    const snapshot = await firestore().collection('Users').doc(uid).collection('Expenses').orderBy('date', 'desc').get();
+    const snapshot = await firestore()
+      .collection('Users')
+      .doc(uid)
+      .collection('Transactions')
+      .doc(month)
+      .collection('Expenses')
+      .orderBy('date', 'desc')
+      .get();
     const expenses: Expense[] = [];
     snapshot.forEach(item => expenses.push({...(item.data() as Expense), id: item.id}));
     return expenses;

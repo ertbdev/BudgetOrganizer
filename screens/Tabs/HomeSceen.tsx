@@ -8,6 +8,7 @@ import Text from '../../components/common/Text';
 
 const HomeScreen = () => {
   const balance = useAppSelector(state => state.budgetSlice.balance);
+  const accounts = useAppSelector(state => state.accountsSlice.accounts);
   const totalMonthExpenses = useAppSelector(state => state.budgetSlice.totalMonthlyExpenses);
 
   return (
@@ -19,8 +20,9 @@ const HomeScreen = () => {
       <Text variant="title" style={{alignSelf: 'flex-start'}} my={10} ml={10}>
         Accounts Summary
       </Text>
-      <AccountCard account="Bank Account" balance={balance.bankAccount.totalIncomes - balance.bankAccount.totalExpenses} />
-      <AccountCard account="Cash" balance={balance.cash.totalIncomes - balance.cash.totalExpenses} />
+      {accounts.map((account, index) => (
+        <AccountCard key={index} account={account.name.replace('_', ' ')} balance={account.availableFunds} />
+      ))}
     </MainContainer>
   );
 };

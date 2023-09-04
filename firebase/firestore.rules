@@ -3,18 +3,20 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // USER STORAGE RULES 
     match /Users/{userId} {
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.id;
+      allow create: if request.auth != null && request.auth.uid == request.resource.id;
       allow read, update, delete : if request.auth != null && request.auth.uid == userId;
     }
+    // ACCOUNTS STORAGE RULES 
+    match /Users/{userId}/Accounts/{accountId} {
+      allow create, read, update, delete: if request.auth.uid == userId;
+    }
     // EXPENSES STORAGE RULES 
-    match /Users/{userId}/Expenses/{expenseId} {
-      allow create: if request.auth.uid == request.resource.data.ownerId;
-      allow read, update, delete: if request.auth.uid == resource.data.ownerId;
+    match /Users/{userId}/Transactions/{month}/Expenses/{expenseId} {
+      allow create, read, update, delete: if request.auth.uid == userId;
     }
     // INCOMES STORAGE RULES 
-    match /Users/{userId}/Incomes/{expenseId} {
-      allow create: if request.auth.uid == request.resource.data.ownerId;
-      allow read, update, delete: if request.auth.uid == resource.data.ownerId;
+    match /Users/{userId}/Transactions/{month}/Incomes/{incomeId} {
+      allow create, read, update, delete: if request.auth.uid == userId;
     }
     // Allow list subcolletions 
     match /Users/{userId}/{document=**} {

@@ -168,7 +168,7 @@ const AddIncomeScreen = ({navigation, route}: Props) => {
           />
           <TextInput
             placeholder="Account"
-            value={values.account}
+            value={values.account.replace('_', ' ')}
             onBlur={handleBlur('account')}
             error={touched.account && Boolean(errors.account)}
             width={'90%'}

@@ -1,9 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
 import budgetSlice from './budgetSlice';
+import userSlice from './userSlice';
+import accountsSlice from './accountsSlice';
 
 export const store = configureStore({
   reducer: {
     budgetSlice: budgetSlice,
+    userSlice: userSlice,
+    accountsSlice: accountsSlice,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

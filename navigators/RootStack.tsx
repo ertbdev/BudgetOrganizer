@@ -17,13 +17,17 @@ import AddExpenseScreen from '../screens/AddExpenseScreen';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {Expense} from '../models/expense';
 import {useAppDispatch} from '../hooks/redux';
-import {setExpenses, setIncomes} from '../redux/budgetSlice';
+import {fetchExpenses, setExpenses, setIncomes} from '../redux/budgetSlice';
 import {expensesSubscriber} from '../firebase/firestoreFunctions/expenses';
 import OptionsModal from '../screens/modals/OptionsModal';
 import AddIncomeScreen from '../screens/AddIncomeScreen';
 import {incomesSubscriber} from '../firebase/firestoreFunctions/incomes';
 import {Income} from '../models/income';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import {Account} from '../models/account';
+import {setAccounts} from '../redux/accountsSlice';
+import {accountsSubscriber} from '../firebase/firestoreFunctions/accounts';
+import dayjs from 'dayjs';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,10 +36,16 @@ const RootStack = () => {
   const {authenticated, user} = useAuthContext();
   const dispatch = useAppDispatch();
 
-  const getExpensesData = useCallback((snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
-    const expenses: Expense[] = [];
-    snapshot.forEach(doc => expenses.push({...doc.data(), id: doc.id} as Expense));
-    dispatch(setExpenses(expenses));
+  // const getExpensesData = useCallback((snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
+  //   const expenses: Expense[] = [];
+  //   snapshot.forEach(doc => expenses.push({...doc.data(), id: doc.id} as Expense));
+  //   dispatch(setExpenses(expenses));
+  // }, []);
+
+  const getAccountsData = useCallback((snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
+    const accounts: Account[] = [];
+    snapshot.forEach(doc => accounts.push({...doc.data(), name: doc.id} as Account));
+    dispatch(setAccounts(accounts));
   }, []);
 
   const getIncomesData = useCallback((snapshot: FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>) => {
@@ -47,15 +57,19 @@ const RootStack = () => {
   useEffect(() => {
     let exSubscriber: (() => void) | undefined = undefined;
     let inSubscriber: (() => void) | undefined = undefined;
+    let AccSubscriber: (() => void) | undefined = undefined;
 
     if (authenticated && user?.id) {
-      exSubscriber = expensesSubscriber(user.id, getExpensesData);
+      // exSubscriber = expensesSubscriber(user.id, getExpensesData);
       inSubscriber = incomesSubscriber(user.id, getIncomesData);
+      AccSubscriber = accountsSubscriber(user.id, getAccountsData);
+      dispatch(fetchExpenses());
     }
 
     return () => {
       exSubscriber && exSubscriber();
       inSubscriber && inSubscriber();
+      AccSubscriber && AccSubscriber();
     };
   }, [authenticated, user]);
 

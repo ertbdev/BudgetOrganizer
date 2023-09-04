@@ -4,6 +4,10 @@ import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {User} from '../models/user';
 import {addUser, getUserData} from '../firebase/firestoreFunctions/user';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {useAppDispatch} from '../hooks/redux';
+import {setUserData} from '../redux/userSlice';
+import {getAccounts} from '../firebase/firestoreFunctions/accounts';
+import {setAccounts} from '../redux/accountsSlice';
 
 type AuthContext = {
   authenticated?: boolean;
@@ -15,11 +19,17 @@ type AuthContext = {
   singInUserUsingGoogle: () => Promise<void>;
 };
 
+const initialConfig = {
+  montlyBudget: 2000,
+};
+
 const context = createContext<AuthContext | null>(null);
 
 export const AuthProvider = ({children}: {children: JSX.Element}) => {
   const [user, setUser] = useState<User>();
   const [authenticated, setAuthenticated] = useState<boolean>();
+
+  const dispatch = useAppDispatch();
 
   const signInUser = useCallback(async (email: string, password: string) => {
     try {
@@ -38,13 +48,24 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const result = await auth().signInWithCredential(googleCredential);
       const user = await getUserData(result.user.uid);
+
       const googleUser = await GoogleSignin.getCurrentUser();
-      if (!user.creationTime) {
+      if (!user?.creationTime) {
         const uid = result.user.uid;
         const creationTime = result.user.metadata.creationTime
           ? new Date(result.user.metadata.creationTime).getTime()
           : new Date().getTime();
-        await addUser({id: uid, name: googleUser?.user.name || '', email: googleUser?.user.email || '', creationTime: creationTime});
+        const newUser = {
+          id: uid,
+          name: googleUser?.user.name || '',
+          email: googleUser?.user.email || '',
+          creationTime: creationTime,
+          config: initialConfig,
+        };
+        await addUser(newUser);
+        dispatch(setUserData(newUser));
+      } else {
+        dispatch(setUserData(user));
       }
     } catch (err) {
       console.error('AuthProvider/signInUserUsingGoogle:', err);
@@ -58,7 +79,9 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       const uid = result.user.uid;
       const _name = name || email.split('@')[0];
       const creationTime = result.user.metadata.creationTime ? new Date(result.user.metadata.creationTime).getTime() : new Date().getTime();
-      await addUser({id: uid, name: _name, email: email, creationTime: creationTime});
+      const newUser = {id: uid, name: _name, email: email, creationTime: creationTime, config: initialConfig};
+      await addUser(newUser);
+      dispatch(setUserData(newUser));
     } catch (err) {
       const firebaseError = err as {code: string};
       console.error('AuthProvider/signUpUser:', firebaseError);
@@ -73,6 +96,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
       await auth().signOut();
       setUser(undefined);
       setAuthenticated(false);
+      dispatch(setUserData({}));
     } catch (err) {
       const firebaseError = err as {code: string};
       console.error('AuthProvider/signOutUser:', firebaseError);
@@ -92,7 +116,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
 
   const getLoggedUser = useCallback(async (loggedUser: FirebaseAuthTypes.User | null) => {
     setAuthenticated(loggedUser !== null);
-    loggedUser && setUser({id: loggedUser.uid, email: loggedUser.email || '', name: '', creationTime: 0});
+    loggedUser && setUser({id: loggedUser.uid, email: loggedUser.email || '', name: '', creationTime: 0, config: initialConfig});
   }, []);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import firestore, {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {Income} from '../../models/income';
+import dayjs from 'dayjs';
 
 export const addIncome = async (data: Income) => {
   const uid = auth().currentUser?.uid;
@@ -10,9 +11,12 @@ export const addIncome = async (data: Income) => {
   }
 
   try {
+    const month = dayjs(data.date).format('MM-YYYY');
     const result = await firestore()
       .collection('Users')
       .doc(uid)
+      .collection('Transactions')
+      .doc(month)
       .collection('Incomes')
       .add({...data, ownerId: uid});
     return {...data, id: result.id, ownerId: uid} as Income;

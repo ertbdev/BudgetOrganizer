@@ -1,7 +1,5 @@
 export type Account = {
   creationTime: number;
-  currentAmount: number;
-  initialAmount: number;
+  availableFunds: number;
   name: string;
-  lastModified: number;
 };

@@ -4,7 +4,7 @@ import {Container, RowContainer} from '../styles/styledComponents/containers';
 import {Card} from '../styles/styledComponents/card';
 import Text from './common/Text';
 import Button from './common/Button';
-import {accounts} from '../assets/constants/expenses';
+import {useAppSelector} from '../hooks/redux';
 
 type Props = {
   showModal?: boolean;
@@ -13,6 +13,7 @@ type Props = {
 };
 
 const AccountsModal = ({showModal, onClosePress, onAccountPress}: Props) => {
+  const accounts = useAppSelector(state => state.accountsSlice.accounts);
   return (
     <Modal visible={showModal} animationType="fade" transparent={true}>
       <Container variant="full">
@@ -22,12 +23,12 @@ const AccountsModal = ({showModal, onClosePress, onAccountPress}: Props) => {
             {accounts &&
               accounts.map((account, index) => (
                 <Button
-                  onPress={() => onAccountPress && onAccountPress(account)}
-                  key={`${account}-${index}`}
+                  onPress={() => onAccountPress && onAccountPress(account.name)}
+                  key={`${account.name}-${index}`}
                   mode="text"
                   my={10}
                   textSize={16}>
-                  {account}
+                  {account.name.replace('_', ' ')}
                 </Button>
               ))}
           </Container>
